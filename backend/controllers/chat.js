@@ -1,9 +1,11 @@
-const io = require("../index");
-io.on("connection", (socket) => {
-  console.log("hello");
-  socket.on("disconnect",()=> {
-  console.log("bye");
+const server = require("../index");
+const socket = require("socket.io");
 
-  })
+const io = socket(server, { cors: { origin: "http://localhost:3000" } });
+
+io.on("connection", (socket) => {
+  socket.on("message", (data) => {
+    console.log(data);
+  });
+  console.log(`${socket.id} is connected`);
 });
-console.log(io);

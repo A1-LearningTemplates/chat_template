@@ -1,14 +1,16 @@
 const express = require("express");
-const { Server } = require("socket.io");
-var http = require("http");
+const http = require("http");
+const cors = require("cors");
 const app = express();
+app.use(express.json());
+app.use(cors());
+
 const server = http.createServer(app);
-const io = new Server(server);
 
-const port = 5000;
+const PORT = 5000;
 
-server.listen(port, () =>
-  console.log(`Example app listening on port ${port}!`)
-);
-
-module.exports = io;
+const newServer = server.listen(PORT, () => {
+  console.log(`App listening at http://localhost:${PORT}`);
+});
+module.exports = server
+require("./controllers/chat")
