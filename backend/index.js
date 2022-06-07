@@ -9,7 +9,7 @@ const server = http.createServer(app);
 
 const PORT = 5000;
 
-const newServer = server.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`App listening at http://localhost:${PORT}`);
 });
 module.exports = server
