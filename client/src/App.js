@@ -6,14 +6,7 @@ const App = () => {
   return (
     <div className="App">
       <Chat />
-      <br />
-      <br />
-
-      <br />
-
-      <br />
-
-      <Sw />
+   
     </div>
   );
 };
