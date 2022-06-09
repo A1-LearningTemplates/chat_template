@@ -9,15 +9,12 @@ io.on("connection", (socket) => {
     index: sessionID.length,
   };
   sessionID.push(data);
-  // console.log(data);
+  console.log(data);
   socket.emit("connected", data);
   socket.on("disconnect", (data) => {
     sessionID.splice(data.index, 1);
-
-    console.log(sessionID, "array");
   });
 
-  console.log(sessionID);
   socket.on("message", (data) => {
     console.log(data);
   });

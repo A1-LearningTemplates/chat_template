@@ -14,3 +14,4 @@ server.listen(PORT, () => {
 });
 module.exports = server
 require("./controllers/chat")
+require("./controllers/ws")
