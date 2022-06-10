@@ -4,26 +4,29 @@ const socket = io("http://localhost:5000");
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [clientData, setclientData] = useState(null);
-  const allMessages = [];
   useEffect(() => {
-    console.log(socket);
-    socket.on("connect", (data) => {
-      socket.on("message", (data) => {
-        console.log(data);
-      });
-    });
-    return () => socket.emit("disconnect", clientData);
+    socket.on("connect", () => {});
+
+    return () => {
+      socket.emit("disconnect");
+    };
   }, []);
-  console.log(messages);
+  socket.on("message", (data) => {
+    setMessages([...messages, data]);
+  });
+  socket.on("ping", (data) => {
+    console.log("ping was recived from the server");
+  });
+  socket.on("pong", (latency) => {
+    console.log("latency", latency);
+  });
   const sendMessage = (e) => {
     e.preventDefault();
-    socket.emit("message", { message: message, id: socket.id });
-    allMessages.push({ message: message, id: socket.id });
-    setMessages(allMessages);
+    socket.emit("message", { message: message });
+    setMessages([...messages, { message: message }]);
     setMessage("");
   };
-
+  console.log(messages);
   return (
     <>
       <div>
@@ -40,6 +43,10 @@ const Chat = () => {
           }}
         />
       </form>
+      {messages.length &&
+        messages.map((ele, index) => {
+          return <p key={index}>{ele.message}</p>;
+        })}
     </>
   );
 };

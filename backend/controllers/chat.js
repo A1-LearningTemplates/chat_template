@@ -4,17 +4,22 @@ const server = require("../index");
 const socketio = require("socket.io");
 // creating socketio connection using node server to the cliebt server
 const io = socketio(server, { cors: { origin: "http://localhost:3000" } });
-const sessionID = [];
-io.on("connection", (socket, req) => {
-  const data = {
-    id: socket.id,
-    index: sessionID.length,
-  };
-  sessionID.push(data);
+
+let sessionID = [];
+const addSessionID = (id) => {
+  sessionID.push(id);
   console.log(sessionID);
+};
+const removeSessionID = (id) => {
+  sessionID = sessionID.filter((ele) => {
+    return ele !== id;
+  });
+  console.log(sessionID);
+};
+io.on("connection", (socket, req) => {
+  addSessionID(socket.id);
   socket.on("disconnect", (data) => {
-    sessionID.splice(data.index, 1);
-    console.log(sessionID);
+    removeSessionID(socket.id);
   });
 
   socket.on("message", (data) => {
@@ -22,7 +27,3 @@ io.on("connection", (socket, req) => {
     socket.broadcast.emit("message", data);
   });
 });
-
-
-
-
