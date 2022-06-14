@@ -8,10 +8,10 @@ const Chat = () => {
     socket.on("connect", () => {});
 
     return () => {
-      socket.emit("disconnect");
+      socket.removeAllListeners();
     };
   }, []);
-  socket.on("message", (data) => {
+  socket.on("messageToClient", (data) => {
     setMessages([...messages, data]);
   });
   socket.on("ping", (data) => {
@@ -23,10 +23,8 @@ const Chat = () => {
   const sendMessage = (e) => {
     e.preventDefault();
     socket.emit("message", { message: message });
-    setMessages([...messages, { message: message }]);
     setMessage("");
   };
-  console.log(messages);
   return (
     <>
       <div>
