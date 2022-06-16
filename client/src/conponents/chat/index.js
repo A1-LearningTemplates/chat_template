@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import "./style.css";
 const socket = io("http://localhost:5000");
 const Chat = () => {
   const [message, setMessage] = useState("");
@@ -31,26 +32,40 @@ const Chat = () => {
   };
   console.log(online);
   return (
-    <>
-      <div>
+    <div className="container">
+      <div className="form_box">
         <h1>Chat APP</h1>
+        <form onSubmit={sendMessage}>
+          <button>send</button>
+          <input
+            type="text"
+            placeholder="Message...."
+            value={message}
+            onChange={(e) => {
+              setMessage(e.target.value);
+            }}
+          />
+        </form>
+        <div className="chat_box">
+          {messages.length &&
+            messages.map((ele, index) => {
+              return <p key={index}>{ele.message}</p>;
+            })}
+        </div>
       </div>
-      <form onSubmit={sendMessage}>
-        <button>send</button>
-        <input
-          type="text"
-          placeholder="Message...."
-          value={message}
-          onChange={(e) => {
-            setMessage(e.target.value);
-          }}
-        />
-      </form>
-      {messages.length &&
-        messages.map((ele, index) => {
-          return <p key={index}>{ele.message}</p>;
-        })}
-    </>
+      <div className="onlone_box">
+        <h2>Online Users </h2>
+        {online.length &&
+          online.map((ele) => {
+            return (
+              <div className="users">
+                <img />
+                <span>{ele.socket}</span>
+              </div>
+            );
+          })}
+      </div>
+    </div>
   );
 };
 
