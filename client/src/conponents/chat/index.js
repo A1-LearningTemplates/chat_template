@@ -4,27 +4,32 @@ const socket = io("http://localhost:5000");
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [online, setOnline] = useState([]);
   useEffect(() => {
-    socket.on("connect", () => {});
-
+    socket.on("connect", () => {
+      socket.emit("sendConnectedId", { socket: socket.id });
+    });
     return () => {
+      socket.on("disconnect", () => {});
       socket.removeAllListeners();
     };
   }, []);
+  socket.on("receivedConnection", (data) => {
+    setOnline(data);
+  });
+  socket.on("receivedDisconnect", (data) => {
+    setOnline(data);
+  });
   socket.on("messageToClient", (data) => {
     setMessages([...messages, data]);
   });
-  socket.on("ping", (data) => {
-    console.log("ping was recived from the server");
-  });
-  socket.on("pong", (latency) => {
-    console.log("latency", latency);
-  });
+
   const sendMessage = (e) => {
     e.preventDefault();
     socket.emit("message", { message: message });
     setMessage("");
   };
+  console.log(online);
   return (
     <>
       <div>

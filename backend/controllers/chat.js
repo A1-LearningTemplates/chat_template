@@ -8,22 +8,23 @@ const io = socketio(server, { cors: { origin: "http://localhost:3000" } });
 let sessionID = [];
 const addSessionID = (id) => {
   sessionID.push(id);
-  console.log(sessionID);
 };
 const removeSessionID = (id) => {
   sessionID = sessionID.filter((ele) => {
-    return ele !== id;
+    return ele.socket !== id;
   });
-  console.log(sessionID);
 };
-io.on("connection", (socket, req) => {
-  addSessionID(socket.id);
-  socket.on("disconnect", (data) => {
-    removeSessionID(socket.id);
+io.on("connection", (socket) => {
+  socket.on("sendConnectedId", (data) => {
+    addSessionID(data);
+    io.emit("receivedConnection", sessionID);
   });
 
+  socket.on("disconnect", () => {
+    removeSessionID(socket.id);
+    io.emit("receivedDisconnect", sessionID);
+  });
   socket.on("message", (data) => {
-    console.log(data);
     io.emit("messageToClient", data);
   });
 });
