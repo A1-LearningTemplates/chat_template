@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./style.css";
 const socket = io("http://localhost:5000");
+const socket2 = io("http://localhost:5000/Admin");
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -15,6 +16,12 @@ const Chat = () => {
       socket.removeAllListeners();
     };
   }, []);
+  socket2.on("welcome", (data) => {
+    console.log(data);
+  });
+  socket2.on("joined", (data) => {
+    console.log(data);
+  });
   socket.on("receivedConnection", (data) => {
     setOnline(data);
   });
@@ -56,9 +63,9 @@ const Chat = () => {
       <div className="onlone_box">
         <h2>Online Users </h2>
         {online.length &&
-          online.map((ele) => {
+          online.map((ele, index) => {
             return (
-              <div className="users">
+              <div key={index} className="users">
                 <img />
                 <span>{ele.socket}</span>
               </div>

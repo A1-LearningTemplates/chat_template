@@ -28,3 +28,10 @@ io.on("connection", (socket) => {
     io.emit("messageToClient", data);
   });
 });
+io.of("/Admin").on("connection", (socket) => {
+  socket.join("lvl1");
+  socket
+    .to("lvl1")
+    .emit("joined", { message: "I have joined the lvl1 room " + socket.id });
+  socket.emit("welcome", { socket: socket.id, from: "Admin" });
+});
