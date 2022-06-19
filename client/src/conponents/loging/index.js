@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.css";
-const Login = () => {
+const Login = ({ setIsLogedIn }) => {
+  const login = (event) => {
+    event.preventDefault();
+    setIsLogedIn(true);
+  };
   return (
     <div className="form_container">
-      <form className="form_box">
+      <form
+        className="form_box"
+        onSubmit={(event) => {
+          login(event);
+        }}
+      >
         <h2>join our comiunity</h2>
         <p>
           t is a long established fact that a reader will be distracted by the

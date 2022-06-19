@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+
 import "./style.css";
 const socket = io("http://localhost:5000");
 const socket2 = io("http://localhost:5000/Admin");
-const Chat = () => {
+const Chat = ({ setIsLogedIn }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
@@ -41,6 +42,13 @@ const Chat = () => {
   return (
     <div className="container">
       <div className="form_box">
+        <button
+          onClick={() => {
+            setIsLogedIn(false);
+          }}
+        >
+          Logout
+        </button>
         <h1>Chat APP</h1>
         <form onSubmit={sendMessage}>
           <button>send</button>
