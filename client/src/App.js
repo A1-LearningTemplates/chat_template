@@ -6,8 +6,8 @@ import Login from "./conponents/loging";
 const App = () => {
   return (
     <div className="App">
-      <Chat />
       <Login />
+      <Chat />
     </div>
   );
 };
