@@ -2,7 +2,7 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.568);
+  background-color: #dfdfdf;
 }
 .form_box {
   height: 100%;
@@ -10,5 +10,30 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
   padding: 0 2rem;
+  width: 50%;
+  margin: 0 auto;
+}
+form input {
+  align-self: flex-start;
+  width: 90%;
+  padding: 1rem 0.5rem;
+  border: none;
+  background-color: #dfdfdf;
+  box-shadow: 0 0 0 5px #48ebe03b;
+  border-radius: 3px;
+}
+input:focus {
+  outline: none;
+}
+form button {
+  align-self: flex-start;
+  padding: 1rem;
+  width: 50%;
+  border: none;
+  background-color: inherit;
+  box-shadow: 0 0 0 5px #48ebe03b;
+  cursor: pointer;
+  border-radius: 3px;
 }
