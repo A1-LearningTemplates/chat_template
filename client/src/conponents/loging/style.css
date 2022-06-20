@@ -9,26 +9,28 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   padding: 0 2rem;
   width: 50%;
   margin: 0 auto;
 }
 form input {
-  align-self: flex-start;
   width: 90%;
   padding: 1rem 0.5rem;
   border: none;
   background-color: #dfdfdf;
   box-shadow: 0 0 0 5px #48ebe03b;
   border-radius: 3px;
+  font-size: 1rem;
+  transition: box-shadow 0.5s;
 }
 input:focus {
   outline: none;
+  box-shadow: 0 0 0 5px #38fff2c2;
 }
 form button {
-  align-self: flex-start;
+  transition: box-shadow 0.5s;
   padding: 1rem;
   width: 50%;
   border: none;
@@ -36,4 +38,80 @@ form button {
   box-shadow: 0 0 0 5px #48ebe03b;
   cursor: pointer;
   border-radius: 3px;
+  font-size: 1rem;
+  color: rgb(43, 113, 114);
+  text-shadow: 0px 0px 1px black;
+}
+form button:hover {
+  box-shadow: 0 0 0 5px #38fff2c2;
+}
+input::placeholder {
+  color: rgb(43, 113, 114);
+  text-shadow: 0px 0px 1px black;
+}
+.input_one {
+  animation-name: inputOne;
+  animation-duration: 1s;
+}
+.input_two {
+  animation-name: inputTwo;
+  animation-duration: 1s;
+}
+.btn {
+  animation-name: button;
+  animation-duration: 1s;
+}
+.header {
+  animation-name: header;
+  animation-duration: 1s;
+  color: rgb(43, 113, 114);
+  text-shadow: 0px 0px 1px black;
+}
+.paragraph {
+  animation-name: paragraph;
+  width: 90%;
+  animation-duration: 1s;
+  font-size: .9rem;
+  color: rgba(43, 113, 114, 0.844);
+}
+@keyframes inputOne {
+  0% {
+    transform: translateX(1000px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes inputTwo {
+  0% {
+    transform: translateX(-1000px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes button {
+  0% {
+    transform: translateY(1000px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes header {
+  0% {
+    transform: translateY(-1000px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes paragraph {
+  0% {
+    transform: translateY(1000px);
+  }
+  100% {
+    color: black;
+    transform: translateY(0);
+  }
 }

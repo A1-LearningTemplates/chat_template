@@ -27,27 +27,28 @@ const Login = ({ setIsLogedIn }) => {
           login(event);
         }}
       >
-        <h2>join our comiunity</h2>
+        <h2 className="header">join our comiunity</h2>
 
         <input
+          className="input_one"
           placeholder="User name"
           onChange={(event) => {
             setUserName(event.target.value);
           }}
         />
         <input
+          className="input_two"
           placeholder="pick an image"
           onChange={(event) => {
             setImage(event.target.value);
           }}
         />
-        <button> Join chat</button>
-        <p>
-          t is a long established fact that a reader will be distracted by the
-          readable content of a page when looking at its layout. The point of
-          using Lorem Ipsum is that it has a more-or-less normal distribution of
-          letters, as opposed to using 'Content here, content here', making it
-          look like readable English. Many desktop publishing packages
+        <button className="btn"> Join chat</button>
+        <p className="paragraph">
+          An App designed for chat, built with Nodejs & sockit.io framework in
+          the backend and react.js in frontend, also this app includes animation
+          using pure css.
+          <br /> Just fill the inputs an injoy chating with friends.
         </p>
       </form>
     </div>
