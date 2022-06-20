@@ -17,7 +17,6 @@ const Login = ({ setIsLogedIn, setData }) => {
         setIsLogedIn(true);
         localStorage.setItem("isLogedIn", true);
         setData(res.data.data);
-        JSON.stringify(res.data.data);
         localStorage.setItem("data", JSON.stringify(res.data.data));
       }
     } catch (error) {

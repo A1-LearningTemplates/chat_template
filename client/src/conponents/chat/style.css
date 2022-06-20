@@ -29,3 +29,9 @@
   color: rgb(100, 255, 110);
   font-weight: 600;
 }
+.form_box {
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+  grid-template-rows: 50% 50%;
+}

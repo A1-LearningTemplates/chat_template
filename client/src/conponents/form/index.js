@@ -1,14 +1,18 @@
-
 import { io } from "socket.io-client";
-const socket = io("http://localhost:5000");
-
+import "./style.css";
 const Form = ({ message, setMessage, messages, sendMessage }) => {
   console.log(messages);
   return (
     <div className="popup_form">
+      <div className="chat_box">
+        {messages.length &&
+          messages.map((ele, index) => {
+            return <p key={index}>{ele.message}</p>;
+          })}
+      </div>
       <form onSubmit={sendMessage}>
-        <button>send</button>
         <input
+          className="message_input"
           type="text"
           placeholder="Message...."
           value={message}
@@ -16,13 +20,8 @@ const Form = ({ message, setMessage, messages, sendMessage }) => {
             setMessage(e.target.value);
           }}
         />
+        <button className="message_btn">send</button>
       </form>
-      <div className="chat_box">
-        {messages &&
-          messages.map((ele, index) => {
-            return <p key={index}>{ele.message}</p>;
-          })}
-      </div>
     </div>
   );
 };

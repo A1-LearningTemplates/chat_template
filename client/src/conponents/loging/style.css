@@ -22,7 +22,8 @@
   width: 50%;
   margin: 0 auto;
 }
-form input {
+form .input_on,
+.input_two {
   width: 90%;
   padding: 1rem 0.5rem;
   border: none;
@@ -32,11 +33,12 @@ form input {
   font-size: 1rem;
   transition: box-shadow 0.5s;
 }
-input:focus {
+.input_on:focus,
+.input_two:focus {
   outline: none;
   box-shadow: 0 0 0 5px #38fff2c2;
 }
-form button {
+form .btn {
   transition: box-shadow 0.5s;
   padding: 1rem;
   width: 50%;
@@ -49,7 +51,7 @@ form button {
   color: rgb(43, 113, 114);
   text-shadow: 0px 0px 1px black;
 }
-form button:hover {
+form .btn:hover {
   box-shadow: 0 0 0 5px #38fff2c2;
 }
 input::placeholder {

@@ -1,0 +1,24 @@
+.popup_form {
+  border: 1px solid;
+  height: 200px;
+  display: grid;
+  grid-template-rows: 75% 25%;
+  grid-template-columns: 100%;
+}
+.popup_form form {
+  display: flex;
+}
+.chat_box {
+  padding: 0 0.5rem;
+}
+.message_input {
+  padding: 0 0.5rem;
+  border: none;
+}
+.message_btn {
+  padding: 0 0.5rem;
+  border: none;
+}
+.message_input:focus {
+  outline: none;
+}

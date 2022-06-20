@@ -10,20 +10,24 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
-  console.log(data);
+  const [chatBox, setChatBox] = useState([1, 2, 3, 4, 5, 6]);
+
   useEffect(() => {
-    socket.on("connect", () => {
-      socket.emit("sendConnectedId", {
-        socket: socket.id,
-        uName: data.userName,
-        id: data.id,
+    if (data) {
+      socket.on("connect", () => {
+        socket.emit("sendConnectedId", {
+          socket: socket.id,
+          uName: data.userName,
+          id: data.id,
+        });
       });
-    });
+    }
+
     return () => {
       socket.removeAllListeners();
       socket.close();
     };
-  }, [isLogedIn]);
+  }, []);
   // socket2.on("welcome", (data) => {
   //   console.log(data);
   // });
@@ -50,6 +54,13 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
     <div className="container">
       <div className="onlone_box">
         <h2>Online Users </h2>
+        <button
+          onClick={() => {
+            setIsLogedIn(false);
+          }}
+        >
+          Logout
+        </button>
         <div className="users_box">
           {online.length &&
             online.map((ele, index) => {
@@ -59,7 +70,6 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
                   className="users"
                   onClick={() => {
                     to.current = ele.socket;
-                    console.log(to.current);
                   }}
                 >
                   <img />
@@ -81,14 +91,7 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
           socket={socket}
           sendMessage={sendMessage}
         />
-        <button
-          onClick={() => {
-            setIsLogedIn(false);
-          }}
-        >
-          Logout
-        </button>
-        <h1>Chat APP</h1>
+        
       </div>
     </div>
   );
