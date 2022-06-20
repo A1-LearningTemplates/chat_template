@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import "./style.css";
-const socket = io("http://localhost:5000");
 const socket2 = io("http://localhost:5000/Admin");
-const Chat = ({ setIsLogedIn }) => {
+
+const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
+  const socket = io("http://localhost:5000");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
@@ -13,16 +14,16 @@ const Chat = ({ setIsLogedIn }) => {
       socket.emit("sendConnectedId", { socket: socket.id });
     });
     return () => {
-      socket.on("disconnect", () => {});
       socket.removeAllListeners();
+      socket.close();
     };
-  }, []);
-  socket2.on("welcome", (data) => {
-    console.log(data);
-  });
-  socket2.on("joined", (data) => {
-    console.log(data);
-  });
+  }, [isLogedIn]);
+  // socket2.on("welcome", (data) => {
+  //   console.log(data);
+  // });
+  // socket2.on("joined", (data) => {
+  //   console.log(data);
+  // });
   socket.on("receivedConnection", (data) => {
     setOnline(data);
   });
@@ -38,7 +39,6 @@ const Chat = ({ setIsLogedIn }) => {
     socket.emit("message", { message: message });
     setMessage("");
   };
-  console.log(online);
   return (
     <div className="container">
       <div className="form_box">

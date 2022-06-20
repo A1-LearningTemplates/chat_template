@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./style.css";
-const Login = ({ setIsLogedIn }) => {
+const Login = ({ setIsLogedIn, setData }) => {
   const [userName, setUserName] = useState("");
   const [image, setImage] = useState("");
+  const [password, setPassword] = useState("");
+
   const login = async (event) => {
     event.preventDefault();
     try {
       const res = await axios.post("http://localhost:5000/user", {
+        password,
         userName,
-        image,
       });
       if (res) {
         setIsLogedIn(true);
-        console.log(res);
+        localStorage.setItem("isLogedIn", true);
+        setData(res.data.data);
+        JSON.stringify(res.data.data);
+        localStorage.setItem("data", JSON.stringify(res.data.data));
       }
     } catch (error) {
       console.log(error);
@@ -38,9 +43,9 @@ const Login = ({ setIsLogedIn }) => {
         />
         <input
           className="input_two"
-          placeholder="pick an image"
+          placeholder="Password"
           onChange={(event) => {
-            setImage(event.target.value);
+            setPassword(event.target.value);
           }}
         />
         <button className="btn"> Join chat</button>

@@ -3,14 +3,21 @@ import React, { useState } from "react";
 import Chat from "./conponents/chat";
 import Sw from "./conponents/Sw";
 import Login from "./conponents/loging";
+
 const App = () => {
-  const [isLogedIn, setIsLogedIn] = useState(false);
+  const [isLogedIn, setIsLogedIn] = useState(
+    localStorage.getItem("isLogedIn") || false
+  );
+
+  const [data, setData] = useState(
+    JSON.parse(localStorage.getItem("data")) || ""
+  );
   return (
     <div className="App">
-      {isLogedIn ? (
-        <Chat setIsLogedIn={setIsLogedIn} />
+      {!isLogedIn ? (
+        <Login setIsLogedIn={setIsLogedIn} setData={setData} />
       ) : (
-        <Login setIsLogedIn={setIsLogedIn} />
+        <Chat setIsLogedIn={setIsLogedIn} data={data} />
       )}
     </div>
   );

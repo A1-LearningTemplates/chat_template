@@ -1,29 +1,18 @@
 const userModle = require("../models/userSchema");
-
-const login = async (req, res) => {
+const login = async (req, res, next) => {
+  const { userName, password } = req.body;
   try {
-    const { userName, image } = req.body;
-
-    const newUser = userModle({
-      userName,
-      image,
-    });
-    const data = await newUser.save();
-    if (data) {
-      return res.status(201).json({
+    const data = await userModle.findOne({ userName: userName });
+    if (data && password === data.password) {
+      return res.status(200).json({
         success: true,
-        message: "user created",
-        data,
+        message: "login successfuly",
+        data: { userName: data.userName, id: data.id },
       });
+    } else {
+      next();
     }
   } catch (error) {
-    if (error.keyPattern.userName) {
-      return res.status(404).json({
-        success: false,
-        message: "userName already exist",
-        error,
-      });
-    }
     res.status(500).json({
       success: false,
       message: "server error",
@@ -31,5 +20,27 @@ const login = async (req, res) => {
     });
   }
 };
+const addUser = async (req, res) => {
+  try {
+    const { userName, password } = req.body;
+    const newUser = userModle({
+      userName,
+      password,
+    });
+    const data = await newUser.save();
+    return res.status(201).json({
+      success: true,
+      message: "user created",
+      data: { userName: data.userName, id: data.id },
+    });
+  } catch (error) {
+    res.status(500);
+    res.json({
+      success: false,
+      message: "server error",
+      error,
+    });
+  }
+};
 
-module.exports = { login };
+module.exports = { login, addUser };

@@ -2,9 +2,13 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
-  background: rgb(58,147,25);
-  background: linear-gradient(342deg, rgba(58,147,25,0.28335084033613445) 0%, rgba(116,236,71,0.21612394957983194) 35%, rgba(108,255,0,0.28895308123249297) 100%);
-
+  background: rgb(58, 147, 25);
+  background: linear-gradient(
+    342deg,
+    rgba(58, 147, 25, 0.28335084033613445) 0%,
+    rgba(116, 236, 71, 0.21612394957983194) 35%,
+    rgba(108, 255, 0, 0.28895308123249297) 100%
+  );
 }
 
 .form_box {
@@ -53,27 +57,22 @@ input::placeholder {
   text-shadow: 0px 0px 1px black;
 }
 .input_one {
-  animation-name: inputOne;
-  animation-duration: 1s;
+  animation: inputOne 1s ease-out;
 }
 .input_two {
-  animation-name: inputTwo;
-  animation-duration: 1s;
+  animation: inputTwo 1s ease-out;
 }
 .btn {
-  animation-name: button;
-  animation-duration: 1s;
+  animation: button 1s ease-out;
 }
 .header {
-  animation-name: header;
-  animation-duration: 1s;
+  animation: header 1s ease-out;
   color: rgb(43, 113, 114);
   text-shadow: 0px 0px 1px black;
 }
 .paragraph {
-  animation-name: paragraph;
+  animation: paragraph 1s ease-out;
   width: 90%;
-  animation-duration: 1s;
   font-size: 0.9rem;
   color: rgba(43, 113, 114, 0.844);
 }

@@ -18,20 +18,23 @@ io.on("connection", (socket) => {
   socket.on("sendConnectedId", (data) => {
     addSessionID(data);
     io.emit("receivedConnection", sessionID);
+    console.log(sessionID);
   });
 
   socket.on("disconnect", () => {
     removeSessionID(socket.id);
     io.emit("receivedDisconnect", sessionID);
+    console.log(sessionID);
+
   });
   socket.on("message", (data) => {
     io.emit("messageToClient", data);
   });
 });
-io.of("/Admin").on("connection", (socket) => {
-  socket.join("lvl1");
-  socket
-    .to("lvl1")
-    .emit("joined", { message: "I have joined the lvl1 room " + socket.id });
-  socket.emit("welcome", { socket: socket.id, from: "Admin" });
-});
+// io.of("/Admin").on("connection", (socket) => {
+//   socket.join("lvl1");
+//   socket
+//     .to("lvl1")
+//     .emit("joined", { message: "I have joined the lvl1 room " + socket.id });
+//   socket.emit("welcome", { socket: socket.id, from: "Admin" });
+// });
