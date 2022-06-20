@@ -25,10 +25,10 @@ io.on("connection", (socket) => {
     removeSessionID(socket.id);
     io.emit("receivedDisconnect", sessionID);
     console.log(sessionID);
-
   });
   socket.on("message", (data) => {
-    io.emit("messageToClient", data);
+    console.log(socket.id, "message");
+    io.to([data.to, socket.id]).emit("messageToClient", data);
   });
 });
 // io.of("/Admin").on("connection", (socket) => {
