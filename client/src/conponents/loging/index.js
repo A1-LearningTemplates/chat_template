@@ -51,6 +51,7 @@ const Login = ({ setIsLogedIn }) => {
           <br /> Just fill the inputs an injoy chating with friends.
         </p>
       </form>
+      <span className="line"></span>
     </div>
   );
 };
