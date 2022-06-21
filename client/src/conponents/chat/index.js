@@ -3,24 +3,24 @@ import { io } from "socket.io-client";
 import Form from "../form/index";
 import "./style.css";
 // const socket2 = io("http://localhost:5000/Admin");
-const socket = io("http://localhost:5000");
+// const socket = io("http://localhost:5000");
 
 const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState();
-
+  const [socket, setsocket] = useState(io("http://localhost:5000"));
   useEffect(() => {
     socket.connect();
     if (data) {
-      socket.on("connect", () => {
-        socket.emit("sendConnectedId", {
-          socket: socket.id,
-          uName: data.userName,
-          id: data.id,
-        });
+    socket.on("connect", () => {
+      socket.emit("sendConnectedId", {
+        socket: socket.id,
+        uName: data.userName,
+        id: data.id,
       });
+    });
     }
 
     return () => {
