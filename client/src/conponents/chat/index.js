@@ -1,39 +1,49 @@
 import React, { useEffect, useState, useRef } from "react";
+import "./style.css";
+import axios from "axios";
 import { io } from "socket.io-client";
 import Form from "../form/index";
-import "./style.css";
 // const socket2 = io("http://localhost:5000/Admin");
 // const socket = io("http://localhost:5000");
+//---------------------------------------------
 
+/* A function that takes in three parameters. */
 const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
+  /* A state. */
+  console.log(data);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState();
   const [socket, setsocket] = useState(io("http://localhost:5000"));
+
+  //---------------------------------------------
+  /* Connecting to the socket and sending the data to the server. */
   useEffect(() => {
     socket.connect();
     if (data) {
-    socket.on("connect", () => {
-      socket.emit("sendConnectedId", {
-        socket: socket.id,
-        uName: data.userName,
-        id: data.id,
+      socket.on("connect", () => {
+        socket.emit("sendConnectedId", {
+          socket: socket.id,
+          uName: data.userName,
+          id: data.id,
+        });
       });
-    });
     }
-
     return () => {
       socket.removeAllListeners();
       socket.close();
     };
   }, [socket]);
+
   // socket2.on("welcome", (data) => {
   //   console.log(data);
   // });
   // socket2.on("joined", (data) => {
   //   console.log(data);
   // });
+  //---------------------------------------------
+  /* Listening to the socket and updating the state. */
   socket.on("receivedConnection", (data) => {
     if (chatBox) {
       const newdata = data.filter((ele) => {
@@ -59,10 +69,52 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
     setMessages(arr);
   });
 
+  //---------------------------------------------
+  /**
+   * It sends a message to the server, which then sends it to the other user.
+   * @param e - the event object
+   */
   const sendMessage = (e) => {
     e.preventDefault();
     socket.emit("message", { message: message, to: chatBox.socket });
     setMessage("");
+  };
+
+  //---------------------------------------------
+  /**
+   * It's an async function that makes a GET request to the server and returns the response.
+   */
+  const getAllConversation = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/conversation/${data.id}`
+      );
+      if (res) {
+        console.log(res);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //---------------------------------------------
+/**
+ * It takes in an id, and then it makes a post request to the server, sending the id of the current
+ * user and the id of the user that the current user wants to message
+ * @param id - the id of the person you want to create a conversation with
+ */
+  const createNewConversation = async (id) => {
+    try {
+      const res = await axios.post(`http://localhost:5000/conversation`, {
+        person_one: data.id,
+        person_two: id,
+      });
+      if (res) {
+        console.log(res);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   // const removeConvesetion = (id) => {
   //   const newChatBox = chatBox.filter((ele) => {
@@ -70,6 +122,10 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   //   });
   //   setChatBox(newChatBox);
   // };
+  useEffect(() => {
+    getAllConversation();
+  }, []);
+
   return (
     <div className="container">
       <div className="onlone_box">
@@ -92,6 +148,7 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
                   onClick={() => {
                     if (ele.id !== data.id) {
                       setChatBox(ele);
+                      createNewConversation(ele.id);
                     }
                   }}
                 >

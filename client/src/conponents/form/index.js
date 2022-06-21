@@ -31,11 +31,11 @@ const Form = ({
       <form
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            sendMessage();
+            sendMessage(e);
           }
         }}
         onSubmit={(e) => {
-          sendMessage(e, userData.socket);
+          sendMessage(e);
         }}
       >
         <input

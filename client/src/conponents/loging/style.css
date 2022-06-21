@@ -69,7 +69,7 @@ input::placeholder {
   transform: translateX(1000px);
 }
 .header {
-  animation: header 1s ease-out ;
+  animation: header 1s ease-out;
   color: rgb(43, 113, 114);
   text-shadow: 0px 0px 1px black;
 }
@@ -121,11 +121,14 @@ input::placeholder {
   35% {
     transform: scaleY(0.5) translateY(0px);
   }
-  50% {
+  45% {
     transform: translateY(-20px) scaleY(0.9);
   }
-  75% {
+  70% {
     transform: translateY(-40px) scaleY(1.2);
+  }
+  90% {
+    transform: scaleY(0.8) translateY(0);
   }
   100% {
     transform: translateY(0);
