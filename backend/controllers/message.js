@@ -1,14 +1,14 @@
-const messageModle = require("../models/chatSchema");
-conversationModle = require("../models/conversationSchema");
+const messageModle = require("../models/messageSchema");
 const createMessage = async (req, res, next) => {
   const { message, conversation_id } = req.body;
   try {
     const data = messageModle({ message, conversation_id });
     const newCreateMessage = await data.save();
+    console.log(newCreateMessage);
     if (newCreateMessage) {
       return res.status(201).json({
         success: true,
-        message: "new Message created",
+        message: "New message created",
         data: newCreateMessage,
       });
     }

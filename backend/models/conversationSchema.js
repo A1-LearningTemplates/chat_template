@@ -4,4 +4,5 @@ const conversationSchema = mongose.Schema({
   person_two: { type: mongose.Schema.Types.ObjectId, ref: "User" },
 });
 
+
 module.exports = mongose.model("Conversation", conversationSchema);

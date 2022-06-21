@@ -2,16 +2,27 @@ conversationModle = require("../models/conversationSchema");
 const createConversation = async (req, res, next) => {
   const { person_one, person_two } = req.body;
   try {
-    const data = conversationModle({ person_one, person_two });
-    const newCreateConversation = await data.save();
-    if (newCreateConversation) {
+    const isData = await conversationModle.findOne({
+      $and: [{ person_one: person_one }, { person_two: person_two }],
+    });
+    if (isData) {
       return res.status(201).json({
         success: true,
-        message: "new Conversation created",
-        data: newCreateConversation,
+        message: "Conversation already exist",
+        isData,
       });
+    } else {
+      const data = conversationModle({ person_one, person_two });
+      const newCreateConversation = await data.save();
+      if (newCreateConversation) {
+        return res.status(201).json({
+          success: true,
+          message: "New conversation created",
+          data: newCreateConversation,
+        });
+      }
+      throw Error;
     }
-    throw Error;
   } catch (error) {
     res.status(500).json({
       success: false,
