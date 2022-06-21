@@ -3,7 +3,10 @@ const createConversation = async (req, res, next) => {
   const { person_one, person_two } = req.body;
   try {
     const isData = await conversationModle.findOne({
-      $and: [{ person_one: person_one }, { person_two: person_two }],
+      $or: [
+        { $and: [{ person_one: person_one }, { person_two: person_two }] },
+        { $and: [{ person_one: person_two }, { person_two: person_one }] },
+      ],
     });
     if (isData) {
       return res.status(201).json({
@@ -34,7 +37,7 @@ const createConversation = async (req, res, next) => {
 const getConversationById = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const data = await conversationModle.findOne({
+    const data = await conversationModle.find({
       $or: [{ person_one: id }, { person_two: id }],
     });
     if (data) {
