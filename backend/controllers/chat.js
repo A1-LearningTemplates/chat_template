@@ -27,8 +27,8 @@ io.on("connection", (socket) => {
     console.log(sessionID);
   });
   socket.on("message", (data) => {
-    console.log(socket.id, "message");
-    io.to([data.to, socket.id]).emit("messageToClient", data);
+    console.log(data);
+    io.emit("messageToClient", data);
   });
 });
 // io.of("/Admin").on("connection", (socket) => {

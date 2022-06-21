@@ -22,18 +22,18 @@
   width: 50%;
   margin: 0 auto;
 }
-form .input_on,
+form .input_one,
 .input_two {
   width: 90%;
   padding: 1rem 0.5rem;
   border: none;
-  background-color: #dfdfdf;
+  background-color: inherit;
   box-shadow: 0 0 0 5px #48ebe03b;
   border-radius: 3px;
   font-size: 1rem;
   transition: box-shadow 0.5s;
 }
-.input_on:focus,
+.input_one:focus,
 .input_two:focus {
   outline: none;
   box-shadow: 0 0 0 5px #38fff2c2;
@@ -65,7 +65,8 @@ input::placeholder {
   animation: inputTwo 1s ease-out;
 }
 .btn {
-  animation: button 1s ease-out;
+  animation: button 1s ease-out 0.5s forwards;
+  transform: translateX(1000px);
 }
 .header {
   animation: header 1s ease-out;
@@ -96,10 +97,10 @@ input::placeholder {
 }
 @keyframes button {
   0% {
-    transform: translateY(1000px);
+    transform: translateX(1000px);
   }
   100% {
-    transform: translateY(0);
+    transform: translateX(0);
   }
 }
 @keyframes header {

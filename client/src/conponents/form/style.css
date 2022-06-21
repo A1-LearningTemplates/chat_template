@@ -1,23 +1,51 @@
 .popup_form {
   border: 1px solid;
-  height: 200px;
+  height: 90%;
   display: grid;
   grid-template-rows: 75% 25%;
   grid-template-columns: 100%;
+  position: relative;
+  margin: 1rem;
+}
+.close {
+  position: absolute;
+  top: -15px;
+  left: -5px;
+  width: 20px;
+  height: 20px;
+  background-color: antiquewhite;
+  border: 1px solid black;
+  color: brown;
+  text-align: center;
+  cursor: pointer;
 }
 .popup_form form {
   display: flex;
+  align-items: flex-end;
 }
 .chat_box {
   padding: 0 0.5rem;
 }
 .message_input {
+  width: 70%;
+  height: 50%;
   padding: 0 0.5rem;
   border: none;
+  background-color: beige;
+  font-size: 1rem;
+  color: rgb(43, 113, 114);
 }
 .message_btn {
+  width: 30%;
+  height: 50%;
+
   padding: 0 0.5rem;
   border: none;
+  cursor: pointer;
+  background-color: beige;
+  font-size: 1rem;
+  color: rgb(43, 113, 114);
+  text-shadow: 0px 0px 1px black;
 }
 .message_input:focus {
   outline: none;
