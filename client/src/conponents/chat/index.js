@@ -6,7 +6,6 @@ import "./style.css";
 const socket = io("http://localhost:5000");
 
 const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
-  const to = useRef(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
@@ -36,21 +35,23 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   //   console.log(data);
   // });
   socket.on("receivedConnection", (data) => {
-    console.log(data);
+    if (chatBox) {
+      const newdata = data.filter((ele) => {
+        console.log(ele);
+        return ele.id === chatBox.id;
+      });
+      setChatBox(...newdata);
+    }
     setOnline(data);
-    // data.filter((ele) => {
-    //   if (ele.id === to.id) {
-    //     to.current = { socket: ele.socket, id: ele.id };
-    //   }
-    // });
   });
   socket.on("receivedDisconnect", (data) => {
-    // data.filter((ele) => {
-    //   if (ele.id === to.id) {
-    //     console.log("helo");
-    //     setChatBox("");
-    //   }
-    // });
+    if (chatBox) {
+      const newdata = data.filter((ele) => {
+        if (ele.id !== chatBox.id) {
+          setChatBox({ ...chatBox, connected: false });
+        }
+      });
+    }
     setOnline(data);
   });
   socket.on("messageToClient", (data) => {
@@ -59,9 +60,8 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   });
 
   const sendMessage = (e) => {
-    console.log(to);
     e.preventDefault();
-    socket.emit("message", { message: message, to: to.current.socket });
+    socket.emit("message", { message: message, to: chatBox.socket });
     setMessage("");
   };
   // const removeConvesetion = (id) => {
@@ -91,8 +91,6 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
                   className="users"
                   onClick={() => {
                     if (ele.id !== data.id) {
-                      console.log(ele);
-                      to.current = { socket: ele.socket, id: ele.id };
                       setChatBox(ele);
                     }
                   }}
