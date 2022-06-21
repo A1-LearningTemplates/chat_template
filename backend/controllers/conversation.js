@@ -7,7 +7,7 @@ const createConversation = async (req, res, next) => {
     if (newCreateConversation) {
       return res.status(201).json({
         success: true,
-        message: "newCreateConversation created",
+        message: "new Conversation created",
         data: newCreateConversation,
       });
     }

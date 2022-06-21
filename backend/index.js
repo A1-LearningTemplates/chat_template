@@ -10,6 +10,7 @@ const server = http.createServer(app);
 // import the routers
 
 const loginRouter = require("./routes/login");
+const messageRouter = require("./routes/message");
 const conversationRouter = require("./routes/conversation");
 
 mongoose.connect("mongodb://localhost:27017/Chat_app").then(
@@ -22,6 +23,7 @@ mongoose.connect("mongodb://localhost:27017/Chat_app").then(
 );
 // endpoints Router
 app.use("/user", loginRouter);
+app.use("/message", messageRouter);
 app.use("/conversation", conversationRouter);
 
 server.listen(PORT, () => {
