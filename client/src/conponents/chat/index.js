@@ -4,6 +4,7 @@ import Form from "../form/index";
 import "./style.css";
 // const socket2 = io("http://localhost:5000/Admin");
 const socket = io("http://localhost:5000");
+
 const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   const to = useRef(null);
   const [message, setMessage] = useState("");
@@ -12,6 +13,7 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   const [chatBox, setChatBox] = useState();
 
   useEffect(() => {
+    socket.connect();
     if (data) {
       socket.on("connect", () => {
         socket.emit("sendConnectedId", {
@@ -26,7 +28,7 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
       socket.removeAllListeners();
       socket.close();
     };
-  }, []);
+  }, [socket]);
   // socket2.on("welcome", (data) => {
   //   console.log(data);
   // });
@@ -34,29 +36,40 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   //   console.log(data);
   // });
   socket.on("receivedConnection", (data) => {
+    console.log(data);
     setOnline(data);
+    // data.filter((ele) => {
+    //   if (ele.id === to.id) {
+    //     to.current = { socket: ele.socket, id: ele.id };
+    //   }
+    // });
   });
   socket.on("receivedDisconnect", (data) => {
+    // data.filter((ele) => {
+    //   if (ele.id === to.id) {
+    //     console.log("helo");
+    //     setChatBox("");
+    //   }
+    // });
     setOnline(data);
   });
   socket.on("messageToClient", (data) => {
-    console.log(data);
     const arr = [...messages, data];
-    console.log(arr);
     setMessages(arr);
   });
 
-  const sendMessage = (e, to) => {
+  const sendMessage = (e) => {
+    console.log(to);
     e.preventDefault();
-    socket.emit("message", { message: message, to: to });
+    socket.emit("message", { message: message, to: to.current.socket });
     setMessage("");
   };
-  const removeConvesetion = (id) => {
-    const newChatBox = chatBox.filter((ele) => {
-      return ele.id !== id;
-    });
-    setChatBox(newChatBox);
-  };
+  // const removeConvesetion = (id) => {
+  //   const newChatBox = chatBox.filter((ele) => {
+  //     return ele.id !== id;
+  //   });
+  //   setChatBox(newChatBox);
+  // };
   return (
     <div className="container">
       <div className="onlone_box">
@@ -78,7 +91,8 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
                   className="users"
                   onClick={() => {
                     if (ele.id !== data.id) {
-                      to.current = ele.socket;
+                      console.log(ele);
+                      to.current = { socket: ele.socket, id: ele.id };
                       setChatBox(ele);
                     }
                   }}
@@ -98,7 +112,6 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
             message={message}
             setMessage={setMessage}
             messages={messages}
-            setMessages={setMessages}
           />
         )}
       </div>
