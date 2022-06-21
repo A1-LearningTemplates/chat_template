@@ -8,7 +8,10 @@ app.use(cors());
 const PORT = 5000;
 const server = http.createServer(app);
 // import the routers
+
 const loginRouter = require("./routes/login");
+const conversationRouter = require("./routes/conversation");
+
 mongoose.connect("mongodb://localhost:27017/Chat_app").then(
   () => {
     console.log("database connected");
@@ -19,6 +22,8 @@ mongoose.connect("mongodb://localhost:27017/Chat_app").then(
 );
 // endpoints Router
 app.use("/user", loginRouter);
+app.use("/conversation", conversationRouter);
+
 server.listen(PORT, () => {
   console.log(`App listening at http://localhost:${PORT}`);
 });
