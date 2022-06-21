@@ -26,13 +26,14 @@ const getAllMessagesByConversationId = async (req, res, next) => {
   try {
     const data = await messageModle.find({ conversation_id: id });
     if (data) {
-      return res.status(201).json({
+      return res.status(200).json({
         success: true,
-        message: " the Conversation",
+        message: " All messages with id " + id,
         data,
       });
+    } else {
+      throw Error;
     }
-    throw Error;
   } catch (error) {
     res.status(500).json({
       success: false,

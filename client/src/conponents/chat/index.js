@@ -98,11 +98,11 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
   };
 
   //---------------------------------------------
-/**
- * It takes in an id, and then it makes a post request to the server, sending the id of the current
- * user and the id of the user that the current user wants to message
- * @param id - the id of the person you want to create a conversation with
- */
+  /**
+   * It takes in an id, and then it makes a post request to the server, sending the id of the current
+   * user and the id of the user that the current user wants to message
+   * @param id - the id of the person you want to create a conversation with
+   */
   const createNewConversation = async (id) => {
     try {
       const res = await axios.post(`http://localhost:5000/conversation`, {
@@ -116,16 +116,58 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
       console.log(error);
     }
   };
+
+  //---------------------------------------------
+  /**
+   * It's an async function that makes a GET request to the server, and if the response is successful,
+   * it logs the response to the console.
+   * @param id - the id of the user that is logged in
+   */
+  const getAllMessages = async (id) => {
+    try {
+      const res = await axios.get(`http://localhost:5000/message/${id}`);
+      if (res) {
+        console.log(res);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //---------------------------------------------
+  /**
+   * It takes an id as an argument and then uses that id to create a new message in the database.
+   * @param id - the id of the conversation
+   */
+  const createMessage = async (id) => {
+    try {
+      const res = await axios.post(`http://localhost:5000/message/`, {
+        message,
+        conversation_id: id,
+      });
+      if (res) {
+        console.log(res);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //---------------------------------------------
   // const removeConvesetion = (id) => {
   //   const newChatBox = chatBox.filter((ele) => {
   //     return ele.id !== id;
   //   });
   //   setChatBox(newChatBox);
   // };
+
+  //---------------------------------------------
+  /* It's calling the function `getAllConversation` when the component mounts. */
   useEffect(() => {
     getAllConversation();
   }, []);
-
+  
+  //---------------------------------------------
   return (
     <div className="container">
       <div className="onlone_box">
