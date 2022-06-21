@@ -5,9 +5,9 @@
   background: rgb(58, 147, 25);
   background: linear-gradient(
     342deg,
-    rgba(58, 147, 25, 0.28335084033613445) 0%,
-    rgba(116, 236, 71, 0.21612394957983194) 35%,
-    rgba(108, 255, 0, 0.28895308123249297) 100%
+    rgba(44, 193, 123, 0.283) 0%,
+    rgba(87, 221, 158, 0.668) 35%,
+    #ffffff 50%
   );
 }
 
@@ -69,7 +69,7 @@ input::placeholder {
   transform: translateX(1000px);
 }
 .header {
-  animation: header 1s ease-out;
+  animation: header 1s ease-out ;
   color: rgb(43, 113, 114);
   text-shadow: 0px 0px 1px black;
 }
@@ -77,7 +77,9 @@ input::placeholder {
   animation: paragraph 1s ease-out;
   width: 90%;
   font-size: 0.9rem;
-  color: rgba(43, 113, 114, 0.844);
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 1px #2b7172d7;
+  color: #2b7172d7;
 }
 @keyframes inputOne {
   0% {
@@ -99,6 +101,12 @@ input::placeholder {
   0% {
     transform: translateX(1000px);
   }
+  70% {
+    transform: translateX(-20px);
+  }
+  90% {
+    transform: translateX(20px);
+  }
   100% {
     transform: translateX(0);
   }
@@ -107,8 +115,21 @@ input::placeholder {
   0% {
     transform: translateY(-1000px);
   }
+  30% {
+    transform: scaleY(0.7) translateY(0px);
+  }
+  35% {
+    transform: scaleY(0.5) translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px) scaleY(0.9);
+  }
+  75% {
+    transform: translateY(-40px) scaleY(1.2);
+  }
   100% {
     transform: translateY(0);
+    transform: scaleY(1);
   }
 }
 @keyframes paragraph {
