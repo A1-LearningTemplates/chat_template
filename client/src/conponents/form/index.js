@@ -4,25 +4,14 @@ import "./style.css";
 import { useState } from "react";
 // const socket = io("http://localhost:5000");
 
-const Form = ({ removeConvesetion, userData, setChatBox, chatBox, socket }) => {
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-  socket.on("messageToClient", (data) => {
-    console.log(data);
-    // chatBox.filter((ele) => {
-    //   if (ele.socket !== socket.id) {
-    //     // setChatBox([...chatBox, ele]);
-    //   }
-    // });
-    setMessages([...messages, data]);
-  });
-  const sendMessage = (e, to) => {
-    e.preventDefault();
-    console.log(to);
-
-    socket.emit("message", { message: message, to: to });
-    setMessage("");
-  };
+const Form = ({
+  removeConvesetion,
+  userData,
+  message,
+  setMessage,
+  messages,
+  sendMessage,
+}) => {
   return (
     <div className="popup_form">
       <i
