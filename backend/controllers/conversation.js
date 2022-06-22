@@ -37,9 +37,13 @@ const createConversation = async (req, res, next) => {
 const getConversationById = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const data = await conversationModle.find({
-      $or: [{ person_one: id }, { person_two: id }],
-    });
+    const data = await conversationModle
+      .find({
+        $or: [{ person_one: id }, { person_two: id }],
+      })
+      .populate({ path: "person_one", match: { _id: { $ne: id } } })
+      .populate({ path: "person_two", match: { _id: { $ne: id } } });
+
     if (data) {
       return res.status(201).json({
         success: true,

@@ -3,6 +3,7 @@ import "./style.css";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Form from "../form/index";
+import Conversation from "../conversation";
 // const socket2 = io("http://localhost:5000/Admin");
 // const socket = io("http://localhost:5000");
 //---------------------------------------------
@@ -79,24 +80,6 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
     socket.emit("message", { message: message, to: chatBox.socket });
     setMessage("");
   };
-
-  //---------------------------------------------
-  /**
-   * It's an async function that makes a GET request to the server and returns the response.
-   */
-  const getAllConversation = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/conversation/${data.id}`
-      );
-      if (res) {
-        console.log(res);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   //---------------------------------------------
   /**
    * It takes in an id, and then it makes a post request to the server, sending the id of the current
@@ -109,23 +92,6 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
         person_one: data.id,
         person_two: id,
       });
-      if (res) {
-        console.log(res);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  //---------------------------------------------
-  /**
-   * It's an async function that makes a GET request to the server, and if the response is successful,
-   * it logs the response to the console.
-   * @param id - the id of the user that is logged in
-   */
-  const getAllMessages = async (id) => {
-    try {
-      const res = await axios.get(`http://localhost:5000/message/${id}`);
       if (res) {
         console.log(res);
       }
@@ -163,10 +129,7 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
 
   //---------------------------------------------
   /* It's calling the function `getAllConversation` when the component mounts. */
-  useEffect(() => {
-    getAllConversation();
-  }, []);
-  
+
   //---------------------------------------------
   return (
     <div className="container">
@@ -200,6 +163,9 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
               );
             })}
         </div>
+      </div>
+      <div className="conversation">
+        <Conversation setChatBox={setChatBox} data={data} />
       </div>
       <div className="chat_form_box">
         {chatBox && (
