@@ -165,7 +165,7 @@ const Chat = ({ isLogedIn, setIsLogedIn, data }) => {
         </div>
       </div>
       <div className="conversation">
-        <Conversation setChatBox={setChatBox} data={data} />
+        <Conversation online={online} setChatBox={setChatBox} data={data} />
       </div>
       <div className="chat_form_box">
         {chatBox && (

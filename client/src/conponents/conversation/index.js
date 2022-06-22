@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const Conversation = ({ data, setChatBox }) => {
+const Conversation = ({ data, setChatBox, online }) => {
   const [conversation, setConversation] = useState([]);
   //---------------------------------------------
   /**
@@ -13,7 +13,6 @@ const Conversation = ({ data, setChatBox }) => {
         `http://localhost:5000/conversation/${data.id}`
       );
       if (res) {
-        console.log(res.data.data);
         setConversation(res.data.data);
       }
     } catch (error) {
@@ -52,6 +51,12 @@ const Conversation = ({ data, setChatBox }) => {
                   onClick={() => {
                     getAllMessages(ele._id);
                     let user = ele.person_two ? ele.person_two : ele.person_one;
+                    online.map((on) => {
+                      if (on.id === user._id) {
+                        user.socket = on.socket;
+                      }
+                    });
+                    console.log(user);
                     setChatBox(user);
                   }}
                 >
