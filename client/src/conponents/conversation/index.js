@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const Conversation = ({ data, setChatBox, online }) => {
+const Conversation = ({ data, setChatBox, online, setMessages }) => {
   const [conversation, setConversation] = useState([]);
   //---------------------------------------------
   /**
@@ -13,6 +13,7 @@ const Conversation = ({ data, setChatBox, online }) => {
         `http://localhost:5000/conversation/${data.id}`
       );
       if (res) {
+        console.log(res);
         setConversation(res.data.data);
       }
     } catch (error) {
@@ -30,6 +31,7 @@ const Conversation = ({ data, setChatBox, online }) => {
       const res = await axios.get(`http://localhost:5000/message/${id}`);
       if (res) {
         console.log(res);
+        setMessages(res.data.data);
       }
     } catch (error) {
       console.log(error);
@@ -54,6 +56,7 @@ const Conversation = ({ data, setChatBox, online }) => {
                     online.map((on) => {
                       if (on.id === user._id) {
                         user.socket = on.socket;
+                        user.conversation = ele._id;
                       }
                     });
                     console.log(user);

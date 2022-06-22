@@ -9,7 +9,7 @@ const createConversation = async (req, res, next) => {
       ],
     });
     if (isData) {
-      return res.status(201).json({
+      return res.status(200).json({
         success: true,
         message: "Conversation already exist",
         isData,
@@ -44,14 +44,16 @@ const getConversationById = async (req, res, next) => {
       .populate({
         path: "person_one",
         match: { _id: { $ne: id } },
+        select: "userName",
       })
       .populate({
         path: "person_two",
-        match: { _id: { $ne: id } }
+        match: { _id: { $ne: id } },
+        select: "userName",
       });
 
     if (data) {
-      return res.status(201).json({
+      return res.status(200).json({
         success: true,
         message: " the Conversation",
         data,

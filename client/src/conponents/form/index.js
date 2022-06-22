@@ -20,7 +20,7 @@ const Form = ({
           removeConvesetion(userData.id);
         }}
       >
-        x<p>{userData.uName}</p>
+        x<p>{userData.userName}</p>
       </i>
       <div className="chat_box">
         {messages.length &&
