@@ -1,8 +1,8 @@
 .popup_form {
   border: 1px solid;
-  height: 90%;
+  height: 100%;
   display: grid;
-  grid-template-rows: 75% 25%;
+  grid-template-rows: 85% 15%;
   grid-template-columns: 100%;
   position: relative;
   margin: 1rem;
@@ -24,11 +24,18 @@
   align-items: flex-end;
 }
 .chat_box {
+  height: 100%;
   padding: 0 0.5rem;
+  overflow-y: scroll;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.chat_box::-webkit-scrollbar {
+  display: none;
 }
 .message_input {
   width: 70%;
-  height: 50%;
+  height: 90%;
   padding: 0 0.5rem;
   border: none;
   background-color: beige;
@@ -37,8 +44,7 @@
 }
 .message_btn {
   width: 30%;
-  height: 50%;
-
+  height: 90%;
   padding: 0 0.5rem;
   border: none;
   cursor: pointer;
