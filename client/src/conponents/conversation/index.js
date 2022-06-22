@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import "./style.css";
 const Conversation = ({ data, setChatBox, online, setMessages }) => {
   const [conversation, setConversation] = useState([]);
   //---------------------------------------------
@@ -41,14 +41,15 @@ const Conversation = ({ data, setChatBox, online, setMessages }) => {
     getAllConversation();
   }, []);
   return (
-    <div>
+    <div className="conversation_box">
       <h3>Conversation</h3>
-      <div>
+      <div className="conversation_users">
         {conversation &&
           conversation.map((ele, index) => {
             if (ele.person_one !== null || ele.person_two !== null) {
               return (
                 <div
+                  className="conversation_user"
                   key={index}
                   onClick={() => {
                     getAllMessages(ele._id);
@@ -63,7 +64,7 @@ const Conversation = ({ data, setChatBox, online, setMessages }) => {
                     setChatBox(user);
                   }}
                 >
-                  <span>
+                  <span className="user_name">
                     {ele.person_two
                       ? ele.person_two.userName
                       : ele.person_one.userName}

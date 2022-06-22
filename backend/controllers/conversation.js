@@ -9,11 +9,8 @@ const createConversation = async (req, res, next) => {
       ],
     });
     if (isData) {
-      return res.status(200).json({
-        success: true,
-        message: "Conversation already exist",
-        isData,
-      });
+      req.body.conversation_id = isData.id;
+      next();
     } else {
       const data = conversationModle({ person_one, person_two });
       const newCreateConversation = await data.save();

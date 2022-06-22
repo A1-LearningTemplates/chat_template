@@ -94,8 +94,9 @@ const Chat = ({ setIsLogedIn, data }) => {
         person_two: user.id,
       });
       if (res) {
-        console.log(res);
+        console.log(user);
         setChatBox(user);
+        setMessages(res.data.data);
       }
     } catch (error) {
       console.log(error);
