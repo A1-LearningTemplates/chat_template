@@ -11,7 +11,6 @@ import Conversation from "../conversation";
 /* A function that takes in three parameters. */
 const Chat = ({ setIsLogedIn, data }) => {
   /* A state. */
-  console.log(data);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
@@ -65,9 +64,14 @@ const Chat = ({ setIsLogedIn, data }) => {
     }
     setOnline(data);
   });
-  socket.on("messageToClient", (data) => {
-    const arr = [...messages, data];
-    setMessages(arr);
+  socket.on("messageToClient", (dataMessage) => {
+    console.log(dataMessage);
+    if (chatBox.id === dataMessage.chatBox.id) {
+      const arr = [...messages, dataMessage];
+      setMessages(arr);
+    }else{
+
+    }
   });
 
   //---------------------------------------------
@@ -77,7 +81,7 @@ const Chat = ({ setIsLogedIn, data }) => {
    */
   const sendMessage = (e) => {
     e.preventDefault();
-    socket.emit("message", { message: message, to: chatBox.socket });
+    socket.emit("message", { message: message, chatBox });
     setMessage("");
     createMessage(message, chatBox.conversation);
   };
@@ -94,7 +98,6 @@ const Chat = ({ setIsLogedIn, data }) => {
         person_two: user.id,
       });
       if (res) {
-        console.log(user);
         setChatBox(user);
         setMessages(res.data.data);
       }

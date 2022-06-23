@@ -26,9 +26,9 @@ io.on("connection", (socket) => {
     io.emit("receivedDisconnect", sessionID);
     console.log(sessionID);
   });
-  socket.on("message", (data) => {
-    console.log(data);
-    io.to([socket.id, data.to]).emit("messageToClient", data);
+  socket.on("message", (dataMessage) => {
+    console.log(dataMessage);
+    io.to([socket.id, dataMessage.chatBox.socket]).emit("messageToClient", dataMessage);
   });
 });
 // io.of("/Admin").on("connection", (socket) => {
