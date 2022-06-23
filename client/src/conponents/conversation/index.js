@@ -52,16 +52,16 @@ const Conversation = ({ data, setChatBox, online, setMessages }) => {
                   className="conversation_user"
                   key={index}
                   onClick={() => {
-                    getAllMessages(ele._id);
                     let user = ele.person_two ? ele.person_two : ele.person_one;
+                    user.conversation = ele._id;
                     online.map((on) => {
                       if (on.id === user._id) {
                         user.socket = on.socket;
-                        user.conversation = ele._id;
                       }
                     });
                     console.log(user);
                     setChatBox(user);
+                    getAllMessages(ele._id);
                   }}
                 >
                   <span className="user_name">

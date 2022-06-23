@@ -66,11 +66,10 @@ const Chat = ({ setIsLogedIn, data }) => {
   });
   socket.on("messageToClient", (dataMessage) => {
     console.log(dataMessage);
-    if (chatBox.id === dataMessage.chatBox.id) {
+    if (chatBox && chatBox.id === dataMessage.chatBox.id) {
       const arr = [...messages, dataMessage];
       setMessages(arr);
-    }else{
-
+    } else {
     }
   });
 
@@ -83,6 +82,7 @@ const Chat = ({ setIsLogedIn, data }) => {
     e.preventDefault();
     socket.emit("message", { message: message, chatBox });
     setMessage("");
+    console.log(chatBox);
     createMessage(message, chatBox.conversation);
   };
   //---------------------------------------------

@@ -4,6 +4,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 .conversation_box h3 {
   color: red;
   font-size: 1rem;
@@ -16,11 +17,13 @@
   gap: 1rem;
 }
 .conversation_user {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   background-color: aqua;
   border: 1px solid;
   cursor: pointer;
   text-align: center;
 }
 .user_name {
-    
 }
