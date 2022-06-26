@@ -11,6 +11,8 @@ import Conversation from "../conversation";
 /* A function that takes in three parameters. */
 const Chat = ({ setIsLogedIn, data }) => {
   /* A state. */
+  const [conversation, setConversation] = useState([]);
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
@@ -24,6 +26,7 @@ const Chat = ({ setIsLogedIn, data }) => {
     socket.connect();
     if (data) {
       socket.on("connect", () => {
+        console.log(socket.id);
         socket.emit("sendConnectedId", {
           socket: socket.id,
           userName: data.userName,
@@ -48,7 +51,6 @@ const Chat = ({ setIsLogedIn, data }) => {
   socket.on("receivedConnection", (data) => {
     if (chatBox) {
       const newdata = data.filter((ele) => {
-        console.log(ele);
         return ele.id === chatBox.id;
       });
       setChatBox(...newdata);
@@ -66,7 +68,6 @@ const Chat = ({ setIsLogedIn, data }) => {
     setOnline(data);
   });
   socket.on("messageToClient", (dataMessage) => {
-    console.log(dataMessage);
     if (chatBox && chatBox.id === dataMessage.chatBox.id) {
       const arr = [...messages, dataMessage];
       setMessages(arr);
@@ -80,10 +81,11 @@ const Chat = ({ setIsLogedIn, data }) => {
    * @param e - the event object
    */
   const sendMessage = (e) => {
+    console.log(chatBox);
+
     e.preventDefault();
     socket.emit("message", { message: message, chatBox });
     setMessage("");
-    console.log(chatBox);
     createMessage(message, chatBox.conversation);
   };
   //---------------------------------------------
@@ -99,24 +101,36 @@ const Chat = ({ setIsLogedIn, data }) => {
         person_two: user.id,
       });
       if (res) {
-        setChatBox(user);
-        setMessages(res.data.data);
+        if (res.data.status == 201) {
+          setConversation([...conversation, res.data.data]);
+          user.conversation = res.data.data.conversation;
+          setChatBox(user);
+          console.log(res.data.data);
+        } else {
+          user.conversation = res.data.data[0].conversation_id;
+          setChatBox(user);
+          setMessages(res.data.data);
+          console.log(res.data.data);
+        }
       }
     } catch (error) {
       console.log(error);
     }
   };
+  console.log(chatBox);
 
   //---------------------------------------------
   /**
    * It takes an id as an argument and then uses that id to create a new message in the database.
    * @param id - the id of the conversation
    */
+  console.log(data);
   const createMessage = async (message, conversation_id) => {
     try {
       const res = await axios.post(`http://localhost:5000/message/`, {
         message,
         conversation_id,
+        sender: data.id,
       });
       if (res) {
       }
@@ -181,6 +195,8 @@ const Chat = ({ setIsLogedIn, data }) => {
           online={online}
           setChatBox={setChatBox}
           data={data}
+          conversation={conversation}
+          setConversation={setConversation}
         />
       </div>
       <div className="chat_form_box">

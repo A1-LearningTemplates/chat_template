@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./style.css";
-const Conversation = ({ data, setChatBox, online, setMessages }) => {
-  const [conversation, setConversation] = useState([]);
+const Conversation = ({
+  data,
+  setChatBox,
+  online,
+  setMessages,
+  conversation,
+  setConversation,
+}) => {
   //---------------------------------------------
   /**
    * It's an async function that makes a GET request to the server and returns the response.
@@ -46,6 +52,7 @@ const Conversation = ({ data, setChatBox, online, setMessages }) => {
       <div className="conversation_users">
         {conversation &&
           conversation.map((ele, index) => {
+            console.log(ele);
             if (ele.person_one !== null || ele.person_two !== null) {
               return (
                 <div

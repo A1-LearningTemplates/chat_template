@@ -1,8 +1,8 @@
 const messageModle = require("../models/messageSchema");
 const createMessage = async (req, res, next) => {
-  const { message, conversation_id } = req.body;
+  const { message, conversation_id, sender } = req.body;
   // try {
-  const data = messageModle({ message, conversation_id });
+  const data = messageModle({ message, conversation_id, sender });
   const newCreateMessage = await data.save();
   // if (newCreateMessage) {
   //   return res.status(201).json({
@@ -24,9 +24,14 @@ const getAllMessagesByConversationId = async (req, res, next) => {
   const { id } = req.params;
   const { conversation_id } = req.body;
   try {
-    const data = await messageModle.find({
-      conversation_id: id ? id : conversation_id,
-    });
+    const data = await messageModle
+      .find({
+        conversation_id: id ? id : conversation_id,
+      })
+      .populate({
+        path: "sender",
+        select: "userName",
+      });
     if (data) {
       return res.status(200).json({
         success: true,

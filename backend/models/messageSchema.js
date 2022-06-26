@@ -6,6 +6,7 @@ const messageSchema = mongose.Schema(
       type: mongose.Schema.Types.ObjectId,
       ref: "Conversation",
     },
+    sender: { type: mongose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );
