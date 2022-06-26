@@ -16,7 +16,9 @@ const Form = ({
             return (
               <div key={index}>
                 <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
-                <small>{ele.sender.userName}</small>
+                <small>
+                  {ele.sender ? ele.sender.userName : ele.chatBox.userName}
+                </small>
                 <p>{ele.message}</p>
               </div>
             );

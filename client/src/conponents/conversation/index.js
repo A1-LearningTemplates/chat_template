@@ -51,8 +51,8 @@ const Conversation = ({
       <h3>Conversation</h3>
       <div className="conversation_users">
         {conversation &&
+          online.length &&
           conversation.map((ele, index) => {
-            console.log(ele);
             if (ele.person_one !== null || ele.person_two !== null) {
               return (
                 <div
