@@ -15,8 +15,9 @@ const Chat = ({ setIsLogedIn, data }) => {
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState();
-  const [socket, setsocket] = useState(io("http://localhost:5000"));
-
+  // const [socket, setsocket] = useState(io("http://localhost:5000"));
+  const server = useRef(io("http://localhost:5000"));
+  const socket = server.current;
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
   useEffect(() => {
@@ -118,7 +119,6 @@ const Chat = ({ setIsLogedIn, data }) => {
         conversation_id,
       });
       if (res) {
-        console.log(res);
       }
     } catch (error) {
       console.log(error);
@@ -140,8 +140,8 @@ const Chat = ({ setIsLogedIn, data }) => {
   return (
     <div className="container">
       <div className="onlone_box">
-        <h2>Online Users </h2>
         <button
+          className="logout_btn"
           onClick={() => {
             setIsLogedIn(false);
             localStorage.clear();
@@ -149,6 +149,7 @@ const Chat = ({ setIsLogedIn, data }) => {
         >
           Logout
         </button>
+        <h2>Online Users </h2>
         <div className="users_box">
           {online.length &&
             online.map((ele, index) => {
@@ -162,8 +163,13 @@ const Chat = ({ setIsLogedIn, data }) => {
                     }
                   }}
                 >
-                  <img />
-                  <span>{ele.userName}</span>
+                  <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
+                  <div>
+                    <p>
+                      {ele.userName} {ele.id === data.id && <span>: Me</span>}
+                    </p>
+                    <small>online</small>
+                  </div>
                 </div>
               );
             })}

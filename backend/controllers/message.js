@@ -1,25 +1,24 @@
 const messageModle = require("../models/messageSchema");
 const createMessage = async (req, res, next) => {
   const { message, conversation_id } = req.body;
-  try {
-    const data = messageModle({ message, conversation_id });
-    const newCreateMessage = await data.save();
-    console.log(newCreateMessage);
-    if (newCreateMessage) {
-      return res.status(201).json({
-        success: true,
-        message: "New message created",
-        data: newCreateMessage,
-      });
-    }
-    throw Error;
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "server error",
-      error,
-    });
-  }
+  // try {
+  const data = messageModle({ message, conversation_id });
+  const newCreateMessage = await data.save();
+  // if (newCreateMessage) {
+  //   return res.status(201).json({
+  //     success: true,
+  //     message: "New message created",
+  //     data: newCreateMessage,
+  //   });
+  // }
+  //   throw Error;
+  // } catch (error) {
+  //   res.status(500).json({
+  //     success: false,
+  //     message: "server error",
+  //     error,
+  //   });
+  // }
 };
 const getAllMessagesByConversationId = async (req, res, next) => {
   const { id } = req.params;

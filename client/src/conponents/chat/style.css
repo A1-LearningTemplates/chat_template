@@ -1,16 +1,24 @@
 .container {
   display: grid;
-  grid-template-columns: 10% 10% 70%;
+  grid-template-columns: 10% 10% 80%;
   grid-template-rows: 100vh;
+  background: rgb(25, 64, 147);
+  background: linear-gradient(
+    342deg,
+    rgba(25, 64, 147, 0.28335084033613445) 0%,
+    rgba(71, 119, 236, 0.21612394957983194) 35%,
+    rgba(0, 86, 255, 0.5130427170868348) 100%
+  );
 }
 .onlone_box {
-  background-color: rgb(97, 97, 147);
+  background: rgb(255, 255, 255);
 }
 .conversation {
-  background-color: salmon;
+  /* background-color: salmon; */
 }
 .onlone_box h2 {
-  text-align: center;
+  width: 90%;
+  margin: 0 auto;
   border-bottom: 1px solid black;
   letter-spacing: 2px;
 }
@@ -20,6 +28,10 @@
   flex-direction: column;
   align-items: center;
   gap: 0.7rem;
+  overflow-y: scroll;
+  height: 85vh;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .users {
   display: flex;
@@ -27,22 +39,35 @@
   justify-content: flex-start;
   gap: 1rem;
   width: 80%;
-  border: 1px solid yellow;
   padding: 0.2rem;
   cursor: pointer;
 }
-.users span {
-  color: rgb(100, 255, 110);
+.users p {
+  color: rgb(72, 73, 72);
   font-weight: 600;
+  letter-spacing: 1.2px;
+}
+.users p span {
+  color: #00000058;
+}
+.users small {
+  color: rgb(25, 217, 25);
+  letter-spacing: 2px;
 }
 .chat_form_box {
-  /* display: grid;
-  grid-template-columns: 30% 30% 30%;
-  grid-template-rows: 50% 50%; */
-  /* gap: 1rem; */
+  /* width: 100vw; */
 }
 img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+}
+.logout_btn {
+  width: 100%;
+  border: none;
+  background-color: gray;
+  color: white;
+  padding: 1rem 0;
+  cursor: pointer;
+  font-size: 1.3rem;
 }

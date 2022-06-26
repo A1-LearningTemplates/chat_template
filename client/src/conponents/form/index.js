@@ -1,8 +1,4 @@
 import "./style.css";
-/* Importing the socket.io-client library. */
-// import { io } from "socket.io-client";
-import { useState } from "react";
-// const socket = io("http://localhost:5000");
 
 const Form = ({
   removeConvesetion,
@@ -14,14 +10,6 @@ const Form = ({
 }) => {
   return (
     <div className="popup_form">
-      <i
-        className="close"
-        onClick={() => {
-          removeConvesetion(userData.id);
-        }}
-      >
-        x<p>{userData.userName}</p>
-      </i>
       <div className="chat_box">
         {messages.length &&
           messages.map((ele, index) => {
@@ -47,7 +35,6 @@ const Form = ({
             setMessage(e.target.value);
           }}
         />
-        <button className="message_btn">send</button>
       </form>
     </div>
   );

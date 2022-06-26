@@ -1,59 +1,44 @@
 .popup_form {
-  border: 1px solid;
-  height: 100%;
+  background: rgb(154, 154, 154);
+  background: linear-gradient(
+    342deg,
+    rgba(154, 154, 154, 0.6783088235294117) 0%,
+    rgba(208, 208, 208, 0.5018382352941176) 35%,
+    rgba(255, 255, 255, 0.4738270308123249) 100%
+  );
+  height: 90%;
+  width: 70%;
   display: grid;
-  grid-template-rows: 85% 15%;
+  grid-template-rows: 90% 10%;
   grid-template-columns: 100%;
-  position: relative;
-  margin: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-}
-.close {
-  position: absolute;
-  top: -15px;
-  left: -5px;
-  width: 20px;
-  height: 20px;
-  background-color: antiquewhite;
-  border: 1px solid black;
-  color: brown;
-  text-align: center;
-  cursor: pointer;
-}
-.popup_form form {
-  display: flex;
-  align-items: flex-end;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
+    rgba(0, 0, 0, 0.22) 0px 15px 12px;
+  margin: 3% auto;
+  border-radius: 5px;
 }
 .chat_box {
   height: 100%;
-  padding: 0 0.5rem;
+  padding: .5rem;
   overflow-y: scroll;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
-.chat_box::-webkit-scrollbar {
+.chat_box::-webkit-scrollbar,
+.users_box::-webkit-scrollbar {
   display: none;
 }
 .message_input {
-  width: 70%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
   padding: 0 0.5rem;
   border: none;
-  background-color: beige;
+  background-color: #ffffff;
   font-size: 1rem;
   color: rgb(43, 113, 114);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
-.message_btn {
-  width: 30%;
-  height: 90%;
-  padding: 0 0.5rem;
-  border: none;
-  cursor: pointer;
-  background-color: beige;
-  font-size: 1rem;
-  color: rgb(43, 113, 114);
-  text-shadow: 0px 0px 1px black;
-}
+
 .message_input:focus {
   outline: none;
 }

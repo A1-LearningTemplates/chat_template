@@ -18,17 +18,17 @@ io.on("connection", (socket) => {
   socket.on("sendConnectedId", (data) => {
     addSessionID(data);
     io.emit("receivedConnection", sessionID);
-    console.log(sessionID);
   });
 
   socket.on("disconnect", () => {
     removeSessionID(socket.id);
     io.emit("receivedDisconnect", sessionID);
-    console.log(sessionID);
   });
   socket.on("message", (dataMessage) => {
-    console.log(dataMessage);
-    io.to([socket.id, dataMessage.chatBox.socket]).emit("messageToClient", dataMessage);
+    io.to([socket.id, dataMessage.chatBox.socket]).emit(
+      "messageToClient",
+      dataMessage
+    );
   });
 });
 // io.of("/Admin").on("connection", (socket) => {
