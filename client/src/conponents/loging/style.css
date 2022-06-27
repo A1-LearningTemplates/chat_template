@@ -115,17 +115,32 @@ input::placeholder {
   0% {
     transform: translateY(-1000px);
   }
-  30% {
+  25% {
     transform: scaleY(0.7) translateY(0px);
   }
-  35% {
-    transform: scaleY(0.5) translateY(0px);
+  30% {
+    transform: scaleY(0.6) translateY(0px);
+  }
+  40% {
+    transform:  scaleY(0.5) translateY(0px);
   }
   45% {
+    transform: translateY(-7px) scaleY(0.6);
+  }
+  50% {
+    transform: translateY(-15px) scaleY(0.7);
+  }
+  55% {
     transform: translateY(-20px) scaleY(0.9);
+  }
+  60% {
+    transform: translateY(-40px) scaleY(1);
   }
   70% {
     transform: translateY(-40px) scaleY(1.2);
+  }
+  80% {
+    transform: scaleY(1) translateY(0);
   }
   90% {
     transform: scaleY(0.8) translateY(0);

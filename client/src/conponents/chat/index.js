@@ -68,7 +68,9 @@ const Chat = ({ setIsLogedIn, data }) => {
     setOnline(data);
   });
   socket.on("messageToClient", (dataMessage) => {
-    if (chatBox && chatBox.id === dataMessage.chatBox.id) {
+    // console.log(dataMessage);
+
+    if (chatBox && chatBox.conversation === dataMessage.chatBox.conversation) {
       const arr = [...messages, dataMessage];
       setMessages(arr);
     } else {
@@ -124,7 +126,6 @@ const Chat = ({ setIsLogedIn, data }) => {
    * It takes an id as an argument and then uses that id to create a new message in the database.
    * @param id - the id of the conversation
    */
-  console.log(data);
   const createMessage = async (message, conversation_id) => {
     try {
       const res = await axios.post(`http://localhost:5000/message/`, {
