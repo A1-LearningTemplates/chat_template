@@ -83,10 +83,12 @@ const Chat = ({ setIsLogedIn, data }) => {
    * @param e - the event object
    */
   const sendMessage = (e) => {
-    console.log(chatBox);
-
     e.preventDefault();
-    socket.emit("message", { message: message, chatBox });
+    socket.emit("message", {
+      message: message,
+      chatBox,
+      sender: data.userName,
+    });
     setMessage("");
     createMessage(message, chatBox.conversation);
   };
@@ -107,12 +109,10 @@ const Chat = ({ setIsLogedIn, data }) => {
           setConversation([...conversation, res.data.data]);
           user.conversation = res.data.data.conversation;
           setChatBox(user);
-          console.log(res.data.data);
         } else {
           user.conversation = res.data.data[0].conversation_id;
           setChatBox(user);
           setMessages(res.data.data);
-          console.log(res.data.data);
         }
       }
     } catch (error) {
@@ -203,6 +203,7 @@ const Chat = ({ setIsLogedIn, data }) => {
       <div className="chat_form_box">
         {chatBox && (
           <Form
+            chatBox={chatBox}
             userData={chatBox}
             sendMessage={sendMessage}
             message={message}

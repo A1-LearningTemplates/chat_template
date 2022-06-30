@@ -1,24 +1,18 @@
 import "./style.css";
-
-const Form = ({
-  removeConvesetion,
-  userData,
-  message,
-  setMessage,
-  messages,
-  sendMessage,
-}) => {
+import Text from "./Text";
+const Form = ({ message, setMessage, messages, sendMessage, chatBox }) => {
   return (
     <div className="popup_form">
+      <Text chatBox={chatBox} />
+
       <div className="chat_box">
         {messages.length &&
           messages.map((ele, index) => {
+            console.log(ele);
             return (
               <div key={index}>
-                <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
-                <small>
-                  {ele.sender ? ele.sender.userName : ele.chatBox.userName}
-                </small>
+                {/* <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" /> */}
+                <small>{ele.sender ? ele.sender : ele.sender.userName}</small>
                 <p>{ele.message}</p>
               </div>
             );
