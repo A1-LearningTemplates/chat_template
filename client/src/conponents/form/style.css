@@ -9,7 +9,7 @@
   height: 90%;
   width: 70%;
   display: grid;
-  grid-template-rows: 5% 85% 10%;
+  grid-template-rows: 7% 83% 10%;
   grid-template-columns: 100%;
   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px,
     rgba(0, 0, 0, 0.22) 0px 15px 12px;
@@ -97,7 +97,8 @@
 }
 .chat_box {
   height: 100%;
-  padding: 0.5rem;
+  padding: 1rem 0.5rem;
+  /* margin: 1rem 0; */
   overflow-y: scroll;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -120,4 +121,25 @@
 
 .message_input:focus {
   outline: none;
+}
+.sender {
+  text-shadow: 1px 0 1px rgba(0, 0, 0, 0.509);
+  font-weight: 600;
+}
+.sender_red {
+  color: rgb(244, 21, 21);
+}
+.sender_green {
+  color: rgb(38, 233, 31);
+}
+.message {
+  padding-left: 0.7rem;
+  margin-left: 2px;
+}
+
+.message_red {
+  border-left: 3px solid rgba(244, 21, 21, 0.455);
+}
+.message_green {
+  border-left: 3px solid rgba(37, 233, 31, 0.508);
 }

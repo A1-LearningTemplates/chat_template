@@ -203,6 +203,7 @@ const Chat = ({ setIsLogedIn, data }) => {
       <div className="chat_form_box">
         {chatBox && (
           <Form
+            data={data}
             chatBox={chatBox}
             userData={chatBox}
             sendMessage={sendMessage}

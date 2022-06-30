@@ -1,6 +1,13 @@
 import "./style.css";
 import Text from "./Text";
-const Form = ({ message, setMessage, messages, sendMessage, chatBox }) => {
+const Form = ({
+  message,
+  setMessage,
+  messages,
+  sendMessage,
+  chatBox,
+  data,
+}) => {
   return (
     <div className="popup_form">
       <Text chatBox={chatBox} />
@@ -10,10 +17,30 @@ const Form = ({ message, setMessage, messages, sendMessage, chatBox }) => {
           messages.map((ele, index) => {
             console.log(ele);
             return (
-              <div key={index}>
-                {/* <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" /> */}
-                <small>{ele.sender ? ele.sender : ele.sender.userName}</small>
-                <p>{ele.message}</p>
+              <div key={index} className="sende_box">
+                <span
+                  className={
+                    (ele.sender.userName || ele.sender) === data.userName
+                      ? "sender_red sender"
+                      : "sender_green sender"
+                  }
+                >
+                  {(ele.sender.userName || ele.sender) !==
+                  (messages[index && index - 1].sender.userName ||
+                    messages[index && index - 1].sender)
+                    ? ele.sender.userName || ele.sender
+                    : ""}
+                </span>
+
+                <p
+                  className={
+                    (ele.sender.userName || ele.sender) === data.userName
+                      ? "message_red message"
+                      : "message_green message"
+                  }
+                >
+                  {ele.message}
+                </p>
               </div>
             );
           })}
