@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import Form from "../form/index";
 import Conversation from "../conversation";
 // const socket2 = io("http://localhost:5000/Admin");
-// const socket = io("http://localhost:5000");
+const server = io("http://localhost:5000");
 //---------------------------------------------
 
 /* A function that takes in three parameters. */
@@ -18,8 +18,8 @@ const Chat = ({ setIsLogedIn, data }) => {
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState();
   // const [socket, setsocket] = useState(io("http://localhost:5000"));
-  const server = useRef(io("http://localhost:5000"));
-  const socket = server.current;
+  const serverRef = useRef(server);
+  const socket = serverRef.current;
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
   useEffect(() => {
@@ -105,11 +105,14 @@ const Chat = ({ setIsLogedIn, data }) => {
         person_two: user.id,
       });
       if (res) {
-        if (res.data.status == 201) {
+        if (res.status === 201) {
+          console.log(res.status);
           setConversation([...conversation, res.data.data]);
-          user.conversation = res.data.data.conversation;
+          user.conversation = res.data.data._id;
           setChatBox(user);
         } else {
+          console.log(res.status);
+
           user.conversation = res.data.data[0].conversation_id;
           setChatBox(user);
           setMessages(res.data.data);

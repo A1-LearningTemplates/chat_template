@@ -5,7 +5,11 @@ const Text = ({ chatBox }) => {
     <div className="popup_form_name">
       <h4 className="form_name_header">
         {chararcters.map((char, index) => {
-          return <span className={char + index}>{char}</span>;
+          return (
+            <span key={index} className={char + index}>
+              {char}
+            </span>
+          );
         })}{" "}
         {chatBox.userName}
       </h4>

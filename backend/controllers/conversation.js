@@ -9,6 +9,7 @@ const createConversation = async (req, res, next) => {
       ],
     });
     if (isData) {
+      console.log(isData);
       req.body.conversation_id = isData.id;
       next();
     } else {
