@@ -14,8 +14,9 @@ const Form = ({
     // scrollRef.current = document.querySelectorAll(".message");
     if (scrollRef.current) {
       console.log(scrollRef.current);
-      scrollRef.current.scrollIntoView({
+      scrollRef.current.scrollTo({
         behavior: "smooth",
+        top: scrollRef.current.scrollHeight,
       });
     }
   }, [messages]);
@@ -23,10 +24,9 @@ const Form = ({
     <div className="popup_form">
       <Text chatBox={chatBox} />
 
-      <div className="chat_box">
+      <div ref={scrollRef} className="chat_box">
         {messages.length &&
           messages.map((ele, index) => {
-            console.log(ele);
             return (
               <div key={index} className="sende_box">
                 <span
@@ -44,7 +44,7 @@ const Form = ({
                     : ""}
                 </span>
                 <p
-                  ref={scrollRef}
+                  // ref={index === messages.length - 1 ? scrollRef : null}
                   className={
                     (ele.sender.userName || ele.sender) === data.userName
                       ? "message_green message"
