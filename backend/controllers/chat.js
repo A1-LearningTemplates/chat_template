@@ -25,7 +25,6 @@ io.on("connection", (socket) => {
     io.emit("receivedDisconnect", sessionID);
   });
   socket.on("message", (dataMessage) => {
-    console.log(dataMessage.chatBox.socket);
     io.to([dataMessage.chatBox.socket, socket.id]).emit(
       "messageToClient",
       dataMessage

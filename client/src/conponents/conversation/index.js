@@ -19,7 +19,6 @@ const Conversation = ({
         `http://localhost:5000/conversation/${data.id}`
       );
       if (res) {
-        console.log(res);
         setConversation(res.data.data);
       }
     } catch (error) {
@@ -36,7 +35,6 @@ const Conversation = ({
     try {
       const res = await axios.get(`http://localhost:5000/message/${id}`);
       if (res) {
-        console.log(res);
         setMessages(res.data.data);
       }
     } catch (error) {
@@ -44,15 +42,13 @@ const Conversation = ({
     }
   };
   useEffect(() => {
-    if (online) getAllConversation();
+    getAllConversation();
   }, []);
-
   return (
     <div className="conversation_box">
       <h3>Conversation</h3>
       <div className="conversation_users">
         {conversation &&
-          online.length &&
           conversation.map((ele, index) => {
             if (ele.person_one !== null || ele.person_two !== null) {
               return (

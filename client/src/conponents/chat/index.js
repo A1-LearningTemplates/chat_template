@@ -5,21 +5,20 @@ import { io } from "socket.io-client";
 import Form from "../form/index";
 import Conversation from "../conversation";
 // const socket2 = io("http://localhost:5000/Admin");
-const server = io("http://localhost:5000");
+// const server = io("http://localhost:5000");
 //---------------------------------------------
 
 /* A function that takes in three parameters. */
 const Chat = ({ setIsLogedIn, data }) => {
   /* A state. */
   const [conversation, setConversation] = useState([]);
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState();
-  // const [socket, setsocket] = useState(io("http://localhost:5000"));
-  const serverRef = useRef(server);
-  const socket = serverRef.current;
+  const [socket, setsocket] = useState(io("http://localhost:5000"));
+  // const serverRef = useRef(server);
+  // const socket = serverRef.current;
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
   useEffect(() => {
@@ -38,8 +37,7 @@ const Chat = ({ setIsLogedIn, data }) => {
       socket.removeAllListeners();
       socket.close();
     };
-  }, [socket]);
-
+  }, [setIsLogedIn]);
   // socket2.on("welcome", (data) => {
   //   console.log(data);
   // });
@@ -83,14 +81,17 @@ const Chat = ({ setIsLogedIn, data }) => {
    * @param e - the event object
    */
   const sendMessage = (e) => {
+    if (message) {
+      socket.emit("message", {
+        message: message,
+        createdAt: new Date(),
+        chatBox,
+        sender: data.userName,
+      });
+      setMessage("");
+      createMessage(message, chatBox.conversation);
+    }
     e.preventDefault();
-    socket.emit("message", {
-      message: message,
-      chatBox,
-      sender: data.userName,
-    });
-    setMessage("");
-    createMessage(message, chatBox.conversation);
   };
   //---------------------------------------------
   /**
@@ -122,8 +123,6 @@ const Chat = ({ setIsLogedIn, data }) => {
       console.log(error);
     }
   };
-  console.log(chatBox);
-
   //---------------------------------------------
   /**
    * It takes an id as an argument and then uses that id to create a new message in the database.
@@ -169,28 +168,31 @@ const Chat = ({ setIsLogedIn, data }) => {
         </button>
         <h2>Online Users </h2>
         <div className="users_box">
-          {online.length &&
+          {online.length ? (
             online.map((ele, index) => {
               return (
-                <div
-                  key={index}
-                  className="users"
-                  onClick={() => {
-                    if (ele.id !== data.id) {
-                      createNewConversation(ele);
-                    }
-                  }}
-                >
-                  <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
-                  <div>
-                    <p>
-                      {ele.userName} {ele.id === data.id && <span>: Me</span>}
-                    </p>
-                    <small>online</small>
+                ele.id !== data.id && (
+                  <div
+                    key={index}
+                    className="users"
+                    onClick={() => {
+                      if (ele.id !== data.id) {
+                        createNewConversation(ele);
+                      }
+                    }}
+                  >
+                    <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
+                    <div>
+                      <p>{ele.userName}</p>
+                      <small>online</small>
+                    </div>
                   </div>
-                </div>
+                )
               );
-            })}
+            })
+          ) : (
+            <small>Wait for some people to be online..</small>
+          )}
         </div>
       </div>
       <div className="conversation">

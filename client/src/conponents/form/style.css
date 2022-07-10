@@ -1,4 +1,3 @@
-
 .popup_form {
   background: rgb(154, 154, 154);
   background: linear-gradient(
@@ -143,4 +142,10 @@
 }
 .message_green {
   border-left: 3px solid rgba(37, 233, 31, 0.508);
+}
+.createdAt {
+  font-size: 0.6rem;
+  color: #00000076;
+  font-weight: 600;
+  margin-left: 10px;
 }

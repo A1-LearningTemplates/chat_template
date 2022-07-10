@@ -26,47 +26,46 @@ const Form = ({
       <Text chatBox={chatBox} />
 
       <div ref={scrollRef} className="chat_box">
-        {messages.length &&
-          messages.map((ele, index) => {
-            return (
-              <div key={index} className="sende_box">
-                <span>{timeago.format(ele.createdAt)}</span>
-                <span
-                  className={
-                    (ele.sender.userName || ele.sender) === data.userName
-                      ? "sender_green sender"
-                      : "sender_red sender"
-                  }
-                >
-                  {index === 0 && (ele.sender.userName || ele.sender)}
-                  {(ele.sender.userName || ele.sender) !==
-                  (messages[index && index - 1].sender.userName ||
-                    messages[index && index - 1].sender)
-                    ? ele.sender.userName || ele.sender
-                    : ""}
-                </span>
-                <p
-                  // ref={index === messages.length - 1 ? scrollRef : null}
-                  className={
-                    (ele.sender.userName || ele.sender) === data.userName
-                      ? "message_green message"
-                      : "message_red message"
-                  }
-                >
-                  {ele.message}
-                </p>
-              </div>
-            );
-          })}
+        {messages.length
+          ? messages.map((ele, index) => {
+              return (
+                <div key={index} className="sende_box">
+                  <span
+                    className={
+                      (ele.sender.userName || ele.sender) === data.userName
+                        ? "sender_green sender"
+                        : "sender_red sender"
+                    }
+                  >
+                    {index === 0 && (ele.sender.userName || ele.sender)}
+                    {(ele.sender.userName || ele.sender) !==
+                    (messages[index && index - 1].sender.userName ||
+                      messages[index && index - 1].sender)
+                      ? ele.sender.userName || ele.sender
+                      : ""}
+                  </span>
+                  <p
+                    className={
+                      (ele.sender.userName || ele.sender) === data.userName
+                        ? "message_green message"
+                        : "message_red message"
+                    }
+                  >
+                    {ele.message}
+                    <small className="createdAt">
+                      {timeago.format(ele.createdAt)}
+                    </small>
+                  </p>
+                </div>
+              );
+            })
+          : null}
       </div>
       <form
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             sendMessage(e);
           }
-        }}
-        onSubmit={(e) => {
-          sendMessage(e);
         }}
       >
         <input
