@@ -1,5 +1,6 @@
 import "./style.css";
 import Text from "./Text";
+import * as timeago from "timeago.js";
 import { useEffect, useRef } from "react";
 const Form = ({
   message,
@@ -29,6 +30,7 @@ const Form = ({
           messages.map((ele, index) => {
             return (
               <div key={index} className="sende_box">
+                <span>{timeago.format(ele.createdAt)}</span>
                 <span
                   className={
                     (ele.sender.userName || ele.sender) === data.userName
