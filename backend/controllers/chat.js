@@ -30,6 +30,9 @@ io.on("connection", (socket) => {
       dataMessage
     );
   });
+  socket.on("typing", (id) => {
+    socket.to(id).emit("isTyping");
+  });
 });
 // io.of("/Admin").on("connection", (socket) => {
 //   socket.join("lvl1");
