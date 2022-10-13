@@ -11,50 +11,73 @@ import Conversation from "../conversation";
 /* A function that takes in three parameters. */
 const Chat = ({ setIsLogedIn, data }) => {
   /* A state. */
-  const [conversation, setConversation] = useState([]);
+  const [conversation, setConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState();
-  const [socket, setsocket] = useState(io("http://localhost:5000"));
+  const [socket, setsocket] = useState(
+    io("http://localhost:5000", {
+      query: {
+        userName: data.userName,
+        id: data.id,
+
+        /**here it is possible to send client information when connecting */
+      },
+      autoConnect: false,
+      reconnection: false,
+    })
+  );
   // const serverRef = useRef(server);
   // const socket = serverRef.current;
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
   useEffect(() => {
+    console.log("hi");
     socket.connect();
-    if (data) {
-      socket.on("connect", () => {
-        console.log(socket.id);
-        socket.emit("sendConnectedId", {
-          socket: socket.id,
-          userName: data.userName,
-          id: data.id,
+    socket.on("receivedConnection", (data) => {
+      if (chatBox) {
+        const newdata = data.filter((ele) => {
+          return ele.id === chatBox.id;
         });
-      });
-    }
+        setChatBox(...newdata);
+      }
+      setOnline(data);
+    });
+    // if (data) {
+    //   socket.on("connect", () => {
+    //     console.log(socket.id);
+    //     socket.emit("sendConnectedId", {
+    //       socket: socket.id,
+    //       userName: data.userName,
+    //       id: data.id,
+    //     });
+    //   });
+    // }
     return () => {
       socket.removeAllListeners();
       socket.close();
     };
-  }, [setIsLogedIn]);
-  // socket2.on("welcome", (data) => {
-  //   console.log(data);
-  // });
-  // socket2.on("joined", (data) => {
-  //   console.log(data);
-  // });
+  }, []);
+
+  const [typing, setTyping] = useState(false);
+
+
+  const isTyping = (id) => {
+    socket.emit("typing", id);
+  };
+  let num = 0;
+  useEffect(() => {
+    socket.on("isTyping", () => {
+
+
+      setTyping(true);
+
+    });
+  }, [typing]);
   //---------------------------------------------
   /* Listening to the socket and updating the state. */
-  socket.on("receivedConnection", (data) => {
-    if (chatBox) {
-      const newdata = data.filter((ele) => {
-        return ele.id === chatBox.id;
-      });
-      setChatBox(...newdata);
-    }
-    setOnline(data);
-  });
+
   socket.on("receivedDisconnect", (data) => {
     if (chatBox) {
       const newdata = data.filter((ele) => {
@@ -74,7 +97,7 @@ const Chat = ({ setIsLogedIn, data }) => {
     } else {
     }
   });
-
+  console.log(data);
   //---------------------------------------------
   /**
    * It sends a message to the server, which then sends it to the other user.
@@ -209,6 +232,8 @@ const Chat = ({ setIsLogedIn, data }) => {
         {chatBox && (
           <Form
             data={data}
+            typing={typing}
+            isTyping={isTyping}
             chatBox={chatBox}
             userData={chatBox}
             sendMessage={sendMessage}

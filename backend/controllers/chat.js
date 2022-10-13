@@ -15,10 +15,19 @@ const removeSessionID = (id) => {
   });
 };
 io.on("connection", (socket) => {
-  socket.on("sendConnectedId", (data) => {
-    addSessionID(data);
+  // console.log(socket.handshake.query.userName);
+  // addSessionID(data);
+  const data = {
+    socket: socket.id,
+    userName: socket.handshake.query.userName,
+    id: socket.handshake.query.id,
+  };
+  addSessionID(data);
+
     io.emit("receivedConnection", sessionID);
-  });
+  // socket.on("sendConnectedId", (data) => {
+  //   addSessionID(data);
+  // });
 
   socket.on("disconnect", () => {
     removeSessionID(socket.id);
@@ -30,7 +39,7 @@ io.on("connection", (socket) => {
       dataMessage
     );
   });
-  socket.on("typing", (id) => {
+  socket.on("typing", (id, func) => {
     socket.to(id).emit("isTyping");
   });
 });

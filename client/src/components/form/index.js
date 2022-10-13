@@ -9,10 +9,12 @@ const Form = ({
   sendMessage,
   chatBox,
   data,
+  isTyping,
+  typing,
 }) => {
+  console.log(typing);
   const scrollRef = useRef(null);
   useEffect(() => {
-    // scrollRef.current = document.querySelectorAll(".message");
     if (scrollRef.current) {
       console.log(scrollRef.current);
       scrollRef.current.scrollTo({
@@ -21,6 +23,7 @@ const Form = ({
       });
     }
   }, [messages]);
+
   return (
     <div className="popup_form">
       <Text chatBox={chatBox} />
@@ -68,13 +71,24 @@ const Form = ({
           }
         }}
       >
+        <small
+          className="isTyping"
+          style={{ animation: typing ? "typing 3s infinite forwards" : "none" }}
+        >
+          {chatBox.userName} isTyping ...
+        </small>
         <input
           className="message_input"
           type="text"
           placeholder="Message...."
           value={message}
           onChange={(e) => {
+            isTyping(chatBox.socket);
             setMessage(e.target.value);
+            let time = setTimeout(() => {
+              isTyping(chatBox.socket);
+            }, 2000);
+            clearTimeout(time);
           }}
         />
       </form>

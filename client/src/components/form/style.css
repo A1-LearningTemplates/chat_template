@@ -149,3 +149,29 @@
   font-weight: 600;
   margin-left: 10px;
 }
+.isTyping {
+  font-weight: 600;
+  font-size: 9px;
+  opacity: 0;
+  animation: none ;
+}
+@keyframes typing {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 0.4;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
