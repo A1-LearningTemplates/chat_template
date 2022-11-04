@@ -1,29 +1,56 @@
 conversationModle = require("../models/conversationSchema");
+const { chatNamespace } = require("../socket");
+
 const createConversation = async (req, res, next) => {
-  const { person_one, person_two } = req.body;
+  const { user_id, socket_id } = req.body;
+  const newConv = conversationModle({ user_id });
   try {
-    const isData = await conversationModle.findOne({
-      $or: [
-        { $and: [{ person_one: person_one }, { person_two: person_two }] },
-        { $and: [{ person_one: person_two }, { person_two: person_one }] },
-      ],
-    });
-    if (isData) {
-      console.log(isData);
-      req.body.conversation_id = isData.id;
-      next();
-    } else {
-      const data = conversationModle({ person_one, person_two });
-      const newCreateConversation = await data.save();
-      if (newCreateConversation) {
-        return res.status(201).json({
-          success: true,
-          message: "New conversation created",
-          data: newCreateConversation,
-        });
-      }
-      throw Error;
+    const newCreateConversation = await newConv.save();
+    await newCreateConversation.populate("persons.person", "userName");
+    if (newCreateConversation) {
+      chatNamespace.to(socket_id).emit("conv", newCreateConversation);
+      return res.status(201).json({
+        success: true,
+        message: "New conversation created",
+      });
     }
+    throw Error;
+  } catch (error) {
+    if (error.keyPattern.user_id) {
+      res.status(500).json({
+        success: false,
+        message: `Conversation with user id :${user_id} already exist`,
+        error,
+      });
+      return;
+    }
+    res.status(500).json({
+      success: false,
+      message: "server error",
+      error,
+    });
+  }
+};
+const updateConversation = async (req, res, next) => {
+  const { person, user_id, socket_id } = req.body;
+  try {
+    const newCreateConversation = await conversationModle
+      .findOneAndUpdate(
+        { user_id: user_id },
+        { $addToSet: { persons: { person } } },
+        { new: true }
+      )
+      .select({ persons: { $elemMatch: { person: person } } });
+    await newCreateConversation.populate("persons.person", "userName");
+    if (newCreateConversation) {
+      chatNamespace.to(socket_id).emit("conv", newCreateConversation[0]);
+      return res.status(201).json({
+        success: true,
+        message: "New conversation created",
+        data: newCreateConversation,
+      });
+    }
+    throw Error;
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -33,22 +60,11 @@ const createConversation = async (req, res, next) => {
   }
 };
 const getConversationById = async (req, res, next) => {
-  const { id } = req.params;
+  const { user_id } = req.params;
   try {
     const data = await conversationModle
-      .find({
-        $or: [{ person_one: id }, { person_two: id }],
-      })
-      .populate({
-        path: "person_one",
-        match: { _id: { $ne: id } },
-        select: "userName",
-      })
-      .populate({
-        path: "person_two",
-        match: { _id: { $ne: id } },
-        select: "userName",
-      });
+      .findOne({ user_id })
+      .populate("persons.person", "userName");
 
     if (data) {
       return res.status(200).json({
@@ -66,4 +82,8 @@ const getConversationById = async (req, res, next) => {
     });
   }
 };
-module.exports = { createConversation, getConversationById };
+module.exports = {
+  createConversation,
+  getConversationById,
+  updateConversation,
+};

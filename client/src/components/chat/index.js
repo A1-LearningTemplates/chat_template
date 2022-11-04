@@ -11,13 +11,14 @@ import Conversation from "../conversation";
 /* A function that takes in three parameters. */
 const Chat = ({ setIsLogedIn, data }) => {
   /* A state. */
-  const [conversation, setConversation] = useState(null);
+  const [conversation, setConversation] = useState([]);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState();
+  const [typing, setTyping] = useState(false);
   const [socket, setsocket] = useState(
-    io("http://localhost:5000", {
+    io("http://localhost:3001/chat", {
       query: {
         userName: data.userName,
         id: data.id,
@@ -33,9 +34,9 @@ const Chat = ({ setIsLogedIn, data }) => {
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
   useEffect(() => {
-    console.log("hi");
     socket.connect();
     socket.on("receivedConnection", (data) => {
+      console.log(data);
       if (chatBox) {
         const newdata = data.filter((ele) => {
           return ele.id === chatBox.id;
@@ -44,60 +45,54 @@ const Chat = ({ setIsLogedIn, data }) => {
       }
       setOnline(data);
     });
-    // if (data) {
-    //   socket.on("connect", () => {
-    //     console.log(socket.id);
-    //     socket.emit("sendConnectedId", {
-    //       socket: socket.id,
-    //       userName: data.userName,
-    //       id: data.id,
-    //     });
-    //   });
-    // }
+    socket.on("receivedDisconnect", (data) => {
+      if (chatBox) {
+        const newdata = data.filter((ele) => {
+          if (ele.id !== chatBox.id) {
+            setChatBox({ ...chatBox, connected: false });
+          }
+        });
+      }
+      setOnline(data);
+    });
+    socket.on("conv", (data) => {
+      console.log(data);
+      setConversation([...conversation, data]);
+    });
     return () => {
       socket.removeAllListeners();
       socket.close();
     };
   }, []);
 
-  const [typing, setTyping] = useState(false);
-
-
-  const isTyping = (id) => {
-    socket.emit("typing", id);
+  const isTyping = () => {
+    socket.emit("typing", chatBox.socket);
   };
-  let num = 0;
   useEffect(() => {
+    let time;
     socket.on("isTyping", () => {
-
-
+      clearTimeout(time);
       setTyping(true);
-
+      time = setTimeout(() => {
+        setTyping(false);
+      }, 2000);
     });
-  }, [typing]);
+
+    return () => {
+      clearTimeout(time);
+    };
+  }, []);
+
   //---------------------------------------------
   /* Listening to the socket and updating the state. */
 
-  socket.on("receivedDisconnect", (data) => {
-    if (chatBox) {
-      const newdata = data.filter((ele) => {
-        if (ele.id !== chatBox.id) {
-          setChatBox({ ...chatBox, connected: false });
-        }
-      });
-    }
-    setOnline(data);
-  });
   socket.on("messageToClient", (dataMessage) => {
-    // console.log(dataMessage);
-
     if (chatBox && chatBox.conversation === dataMessage.chatBox.conversation) {
       const arr = [...messages, dataMessage];
       setMessages(arr);
     } else {
     }
   });
-  console.log(data);
   //---------------------------------------------
   /**
    * It sends a message to the server, which then sends it to the other user.
@@ -116,6 +111,7 @@ const Chat = ({ setIsLogedIn, data }) => {
     }
     e.preventDefault();
   };
+
   //---------------------------------------------
   /**
    * It takes in an id, and then it makes a post request to the server, sending the id of the current
@@ -127,20 +123,18 @@ const Chat = ({ setIsLogedIn, data }) => {
       const res = await axios.post(`http://localhost:5000/conversation`, {
         person_one: data.id,
         person_two: user.id,
+        socket_id: user.socket,
+        name: data.userName,
       });
-      if (res) {
-        if (res.status === 201) {
-          console.log(res.status);
-          setConversation([...conversation, res.data.data]);
-          user.conversation = res.data.data._id;
-          setChatBox(user);
-        } else {
-          console.log(res.status);
 
-          user.conversation = res.data.data[0].conversation_id;
-          setChatBox(user);
-          setMessages(res.data.data);
-        }
+      if (res.status === 201) {
+        setConversation([...conversation, res.data.data]);
+        user.conversation = res.data.data._id;
+        setChatBox(user);
+      } else {
+        user.conversation = res.data.data[0]?.conversation_id;
+        setChatBox(user);
+        setMessages(res.data.data);
       }
     } catch (error) {
       console.log(error);

@@ -8,7 +8,7 @@ app.use(cors());
 const PORT = 5000;
 const server = http.createServer(app);
 // import the routers
-
+require("./socket");
 const loginRouter = require("./routes/login");
 const messageRouter = require("./routes/message");
 const conversationRouter = require("./routes/conversation");
@@ -29,6 +29,3 @@ app.use("/conversation", conversationRouter);
 server.listen(PORT, () => {
   console.log(`App listening at http://localhost:${PORT}`);
 });
-module.exports = server;
-require("./controllers/chat");
-// require("./controllers/ws")

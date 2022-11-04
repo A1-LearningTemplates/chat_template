@@ -1,41 +1,33 @@
 const messageModle = require("../models/messageSchema");
 const createMessage = async (req, res, next) => {
-  const { message, conversation_id, sender } = req.body;
+  const { message, conversation_id, sender, receiver } = req.body;
   // try {
-  const data = messageModle({ message, conversation_id, sender });
+  const data = messageModle({ message, conversation_id, sender, receiver });
   const newCreateMessage = await data.save();
-  // if (newCreateMessage) {
-  //   return res.status(201).json({
-  //     success: true,
-  //     message: "New message created",
-  //     data: newCreateMessage,
-  //   });
-  // }
-  //   throw Error;
-  // } catch (error) {
-  //   res.status(500).json({
-  //     success: false,
-  //     message: "server error",
-  //     error,
-  //   });
-  // }
+  res.json(newCreateMessage);
 };
-const getAllMessagesByConversationId = async (req, res, next) => {
-  const { id } = req.params;
-  const { conversation_id } = req.body;
+const getAllMessages = async (req, res) => {
+  const { sender, receiver } = req.query;
   try {
     const data = await messageModle
       .find({
-        conversation_id: id ? id : conversation_id,
+        $and: [
+          { $or: [{ sender: sender }, { sender: receiver }] },
+          { $or: [{ receiver: sender }, { receiver: receiver }] },
+        ],
       })
       .populate({
         path: "sender",
+        select: "userName",
+      })
+      .populate({
+        path: "receiver",
         select: "userName",
       });
     if (data) {
       return res.status(200).json({
         success: true,
-        message: " All messages with id " + id,
+        message: " All messages",
         data,
       });
     } else {
@@ -49,4 +41,4 @@ const getAllMessagesByConversationId = async (req, res, next) => {
     });
   }
 };
-module.exports = { createMessage, getAllMessagesByConversationId };
+module.exports = { createMessage, getAllMessages };
