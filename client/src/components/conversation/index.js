@@ -14,13 +14,11 @@ const Conversation = ({
    * It's an async function that makes a GET request to the server and returns the response.
    */
   const getAllConversation = async () => {
-    console.log(data);
     try {
       const res = await axios.get(
         `http://localhost:5000/conversation/${data.id}`
       );
       if (res) {
-        console.log(res.data.data);
         setConversation(res.data.data.persons);
       }
     } catch (error) {
@@ -39,7 +37,6 @@ const Conversation = ({
         `http://localhost:5000/message/?receiver=${receiver}&sender=${data.id}`
       );
       if (res) {
-        console.log(res);
         setMessages(res.data.data);
       }
     } catch (error) {
@@ -54,7 +51,6 @@ const Conversation = ({
       <h3>Conversation</h3>
       <div className="conversation_users">
         {conversation?.map((ele, index) => {
-          console.log(ele);
           return (
             <div
               className="conversation_user"

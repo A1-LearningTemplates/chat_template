@@ -36,7 +36,6 @@ const Chat = ({ setIsLogedIn, data }) => {
   useEffect(() => {
     socket.connect();
     socket.on("receivedConnection", (data) => {
-      console.log(data);
       if (chatBox) {
         const newdata = data.filter((ele) => {
           return ele.id === chatBox.id;
@@ -55,16 +54,27 @@ const Chat = ({ setIsLogedIn, data }) => {
       }
       setOnline(data);
     });
-    socket.on("conv", (data) => {
-      console.log(data);
-      setConversation([...conversation, data]);
-    });
+
     return () => {
       socket.removeAllListeners();
       socket.close();
     };
   }, []);
 
+  socket.on("conv", (data) => {
+    if (data) {
+      const person = {
+        person: data.person.person,
+      };
+      const existed = conversation.find((elem) => {
+        return elem.person._id === person._id;
+      });
+      if (!existed) {
+        const arr = [...conversation, person];
+        setConversation(arr);
+      }
+    }
+  });
   const isTyping = () => {
     socket.emit("typing", chatBox.socket);
   };
@@ -118,23 +128,25 @@ const Chat = ({ setIsLogedIn, data }) => {
    * user and the id of the user that the current user wants to message
    * @param id - the id of the person you want to create a conversation with
    */
-  const createNewConversation = async (user) => {
+  const updateConversation = async (user) => {
     try {
-      const res = await axios.post(`http://localhost:5000/conversation`, {
-        person_one: data.id,
-        person_two: user.id,
-        socket_id: user.socket,
-        name: data.userName,
+      const res = await axios.put(`http://localhost:5000/conversation`, {
+        person: user.id,
+        user_id: data.id,
+        socket_ids: [socket.id, user.socket],
       });
 
-      if (res.status === 201) {
-        setConversation([...conversation, res.data.data]);
-        user.conversation = res.data.data._id;
+      if (res.data.success) {
+        const person = {
+          person: res.data.data,
+        };
+        const existed = conversation.find((elem) => {
+          return elem.person._id === person.person._id;
+        });
+        if (!existed) {
+          setConversation([...conversation, person]);
+        }
         setChatBox(user);
-      } else {
-        user.conversation = res.data.data[0]?.conversation_id;
-        setChatBox(user);
-        setMessages(res.data.data);
       }
     } catch (error) {
       console.log(error);
@@ -194,7 +206,7 @@ const Chat = ({ setIsLogedIn, data }) => {
                     className="users"
                     onClick={() => {
                       if (ele.id !== data.id) {
-                        createNewConversation(ele);
+                        updateConversation(ele);
                       }
                     }}
                   >

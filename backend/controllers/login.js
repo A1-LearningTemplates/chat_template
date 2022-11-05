@@ -20,7 +20,7 @@ const login = async (req, res, next) => {
     });
   }
 };
-const addUser = async (req, res) => {
+const addUser = async (req, res, next) => {
   try {
     const { userName, password } = req.body;
     const newUser = userModle({
@@ -28,11 +28,12 @@ const addUser = async (req, res) => {
       password,
     });
     const data = await newUser.save();
-    return res.status(201).json({
-      success: true,
-      message: "user created",
-      data: { userName: data.userName, id: data.id },
-    });
+    if (data) {
+      req.body = { userName: data.userName, id: data.id };
+      next();
+      return;
+    }
+    throw Error;
   } catch (error) {
     res.status(500);
     res.json({
