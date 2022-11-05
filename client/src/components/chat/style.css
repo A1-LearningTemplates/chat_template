@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  grid-template-columns: 10% 10% 80%;
+  grid-template-columns: 100px 150px 80%;
   grid-template-rows: 99vh;
   background: rgb(25, 64, 147);
   background: linear-gradient(
@@ -9,7 +9,7 @@
     rgba(71, 119, 236, 0.21612394957983194) 35%,
     rgba(0, 86, 255, 0.5130427170868348) 100%
   );
-  overflow-y:inherit;
+  overflow-y: inherit;
 }
 .onlone_box {
   background: rgb(255, 255, 255);
@@ -18,10 +18,9 @@
   /* background-color: salmon; */
 }
 .onlone_box h2 {
-  width: 90%;
-  margin: 0 auto;
   border-bottom: 1px solid black;
-  letter-spacing: 2px;
+  padding: 0.2rem;
+  font-size: 1rem;
 }
 .users_box {
   padding: 1rem 0;
@@ -37,10 +36,7 @@
 .users {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-  width: 80%;
-  padding: 0.2rem;
+  gap: 5px;
   cursor: pointer;
 }
 .users p {
