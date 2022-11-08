@@ -27,39 +27,36 @@ const Form = ({
       <Text chatBox={chatBox} />
 
       <div ref={scrollRef} className="chat_box">
-        {messages.length
-          ? messages.map((ele, index) => {
-              console.log(ele);
-              return (
-                <div key={index} className="sende_box">
-                  <span
-                    className={
-                      ele.sender._id === data.id
-                        ? "sender_green sender"
-                        : "sender_red sender"
-                    }
-                  >
-                    {(index === 0 ||
-                      ele.sender.userName !==
-                        messages[index - 1].sender.userName) &&
-                      ele.sender.userName}
-                  </span>
-                  <p
-                    className={
-                      ele.sender._id === data.id
-                        ? "message_green message"
-                        : "message_red message"
-                    }
-                  >
-                    {ele.message}
-                    <small className="createdAt">
-                      {timeago.format(ele.createdAt)}
-                    </small>
-                  </p>
-                </div>
-              );
-            })
-          : null}
+        {messages?.map((ele, index) => {
+          return (
+            <div key={index} className="sende_box">
+              <span
+                className={
+                  ele.sender.id === data.id
+                    ? "sender_green sender"
+                    : "sender_red sender"
+                }
+              >
+                {(index === 0 ||
+                  ele.sender.userName !==
+                    messages[index - 1].sender.userName) &&
+                  ele.sender.userName}
+              </span>
+              <p
+                className={
+                  ele.sender.id === data.id
+                    ? "message_green message"
+                    : "message_red message"
+                }
+              >
+                {ele.message}
+                <small className="createdAt">
+                  {timeago.format(ele.createdAt)}
+                </small>
+              </p>
+            </div>
+          );
+        })}
       </div>
       <form
         onKeyDown={(e) => {

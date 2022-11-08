@@ -15,7 +15,7 @@ const Chat = ({ setIsLogedIn, data }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
-  const [chatBox, setChatBox] = useState();
+  const [chatBox, setChatBox] = useState("");
   const [typing, setTyping] = useState(false);
   const [socket, setsocket] = useState(
     io("http://localhost:3001/chat", {
@@ -26,11 +26,9 @@ const Chat = ({ setIsLogedIn, data }) => {
         /**here it is possible to send client information when connecting */
       },
       autoConnect: false,
-      reconnection: false,
+      // reconnection: false,
     })
   );
-  // const serverRef = useRef(server);
-  // const socket = serverRef.current;
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
   useEffect(() => {
@@ -66,13 +64,12 @@ const Chat = ({ setIsLogedIn, data }) => {
       const person = {
         person: data.person.person,
       };
-      const existed = conversation.find((elem) => {
-        return elem.person._id === person._id;
-      });
-      if (!existed) {
-        const arr = [...conversation, person];
-        setConversation(arr);
-      }
+      // const existed = conversation.find((elem) => {
+      //   return elem.person._id === person._id;
+      // });
+      // if (!existed) {
+      setConversation([...conversation, person]);
+      // }
     }
   });
   const isTyping = () => {
@@ -97,7 +94,10 @@ const Chat = ({ setIsLogedIn, data }) => {
   /* Listening to the socket and updating the state. */
 
   socket.on("messageToClient", (dataMessage) => {
-    if (chatBox && chatBox.conversation === dataMessage.chatBox.conversation) {
+    if (
+      chatBox._id === dataMessage.receiver._id ||
+      chatBox._id === dataMessage.sender.id
+    ) {
       const arr = [...messages, dataMessage];
       setMessages(arr);
     } else {
@@ -113,8 +113,8 @@ const Chat = ({ setIsLogedIn, data }) => {
       socket.emit("message", {
         message: message,
         createdAt: new Date(),
-        chatBox,
-        sender: data.userName,
+        receiver: chatBox,
+        sender: data,
       });
       setMessage("");
       createMessage(message, chatBox.conversation);
@@ -129,40 +129,40 @@ const Chat = ({ setIsLogedIn, data }) => {
    * @param id - the id of the person you want to create a conversation with
    */
   const updateConversation = async (user) => {
-    try {
-      const res = await axios.put(`http://localhost:5000/conversation`, {
-        person: user.id,
-        user_id: data.id,
-        socket_ids: [socket.id, user.socket],
-      });
-
-      if (res.data.success) {
-        const person = {
-          person: res.data.data,
-        };
-        const existed = conversation.find((elem) => {
-          return elem.person._id === person.person._id;
+    const existed = conversation.find((elem) => {
+      return elem.person._id === user.id;
+    });
+    if (!existed)
+      try {
+        const res = await axios.put(`http://localhost:5000/conversation`, {
+          person: user.id,
+          user_id: data.id,
+          socket_ids: [socket.id, user.socket],
         });
-        if (!existed) {
+
+        if (res.data.success) {
+          const person = {
+            person: res.data.data,
+          };
+
           setConversation([...conversation, person]);
+          setChatBox(user);
         }
-        setChatBox(user);
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
   };
   //---------------------------------------------
   /**
    * It takes an id as an argument and then uses that id to create a new message in the database.
    * @param id - the id of the conversation
    */
-  const createMessage = async (message, conversation_id) => {
+  const createMessage = async (message) => {
     try {
       const res = await axios.post(`http://localhost:5000/message/`, {
         message,
-        conversation_id,
         sender: data.id,
+        receiver: chatBox._id,
       });
       if (res) {
       }

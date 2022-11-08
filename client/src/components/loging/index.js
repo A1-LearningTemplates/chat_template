@@ -38,7 +38,7 @@ const Login = ({ setIsLogedIn, setData }) => {
           placeholder="User name"
           required
           type="text"
-          minlength="6"
+          minLength="6"
           onChange={(event) => {
             setUserName(event.target.value);
           }}
@@ -47,7 +47,7 @@ const Login = ({ setIsLogedIn, setData }) => {
           className="input_two"
           placeholder="Password"
           required
-          minlength="6"
+          minLength="6"
           type="password"
           onChange={(event) => {
             setPassword(event.target.value);

@@ -35,7 +35,7 @@ const updateConversation = async (req, res, next) => {
   try {
     const result = await conversationModle
       .findOneAndUpdate(
-        { user_id: user_id },
+        { user_id: [user_id, person] },
         { $addToSet: { persons: { person } } },
         { new: true }
       )

@@ -26,7 +26,7 @@ chatNamespace.on("connection", (socket) => {
   });
   socket.on("message", (dataMessage) => {
     chatNamespace
-      .to([dataMessage.chatBox.socket, socket.id])
+      .to([dataMessage.receiver.socket, socket.id])
       .emit("messageToClient", dataMessage);
   });
   socket.on("typing", (id) => {

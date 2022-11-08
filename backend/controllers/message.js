@@ -1,10 +1,10 @@
 const messageModle = require("../models/messageSchema");
 const createMessage = async (req, res, next) => {
-  const { message, conversation_id, sender, receiver } = req.body;
+  const { message, sender, receiver } = req.body;
   // try {
-  const data = messageModle({ message, conversation_id, sender, receiver });
-  const newCreateMessage = await data.save();
-  res.json(newCreateMessage);
+  const data = messageModle({ message, sender, receiver });
+  await data.save();
+  res.json({ success: true });
 };
 const getAllMessages = async (req, res) => {
   const { sender, receiver } = req.query;
