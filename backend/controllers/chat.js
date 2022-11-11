@@ -12,7 +12,7 @@ chatNamespace.on("connection", (socket) => {
   const data = {
     socket: socket.id,
     userName: socket.handshake.query.userName,
-    id: socket.handshake.query.id,
+    _id: socket.handshake.query._id,
   };
   addSessionID(data);
   chatNamespace.emit("receivedConnection", sessionID);

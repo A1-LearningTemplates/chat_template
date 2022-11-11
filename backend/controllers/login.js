@@ -7,7 +7,7 @@ const login = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         message: "login successfuly",
-        data: { userName: data.userName, id: data.id },
+        data: { userName: data.userName, _id: data._id },
       });
     } else {
       next();
@@ -29,7 +29,7 @@ const addUser = async (req, res, next) => {
     });
     const data = await newUser.save();
     if (data) {
-      req.body = { userName: data.userName, id: data.id };
+      req.body = { userName: data.userName, _id: data._id };
       next();
       return;
     }

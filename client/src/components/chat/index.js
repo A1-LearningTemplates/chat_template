@@ -21,7 +21,7 @@ const Chat = ({ setIsLogedIn, data }) => {
     io("http://localhost:3001/chat", {
       query: {
         userName: data.userName,
-        id: data.id,
+        _id: data._id,
 
         /**here it is possible to send client information when connecting */
       },
@@ -34,47 +34,17 @@ const Chat = ({ setIsLogedIn, data }) => {
   useEffect(() => {
     socket.connect();
     socket.on("receivedConnection", (data) => {
-      if (chatBox) {
-        const newdata = data.filter((ele) => {
-          return ele.id === chatBox.id;
-        });
-        setChatBox(...newdata);
-      }
       setOnline(data);
     });
     socket.on("receivedDisconnect", (data) => {
-      if (chatBox) {
-        const newdata = data.filter((ele) => {
-          if (ele.id !== chatBox.id) {
-            setChatBox({ ...chatBox, connected: false });
-          }
-        });
-      }
       setOnline(data);
     });
 
     return () => {
       socket.removeAllListeners();
-      socket.close();
+      // socket.close();
     };
   }, []);
-
-  socket.on("conv", (data) => {
-    if (data) {
-      const person = {
-        person: data.person.person,
-      };
-      // const existed = conversation.find((elem) => {
-      //   return elem.person._id === person._id;
-      // });
-      // if (!existed) {
-      setConversation([...conversation, person]);
-      // }
-    }
-  });
-  const isTyping = () => {
-    socket.emit("typing", chatBox.socket);
-  };
   useEffect(() => {
     let time;
     socket.on("isTyping", () => {
@@ -84,25 +54,42 @@ const Chat = ({ setIsLogedIn, data }) => {
         setTyping(false);
       }, 2000);
     });
-
     return () => {
       clearTimeout(time);
     };
   }, []);
 
-  //---------------------------------------------
-  /* Listening to the socket and updating the state. */
+  useEffect(() => {
+    socket.on("conv", (data) => {
+      if (data) {
+        const person = {
+          person: data.person.person,
+        };
+        setConversation([...conversation, person]);
+      }
+    });
+  }, [conversation]);
 
-  socket.on("messageToClient", (dataMessage) => {
-    if (
-      chatBox._id === dataMessage.receiver._id ||
-      chatBox._id === dataMessage.sender.id
-    ) {
-      const arr = [...messages, dataMessage];
-      setMessages(arr);
-    } else {
-    }
-  });
+  useEffect(() => {
+    //---------------------------------------------
+    /* Listening to the socket and updating the state. */
+
+    socket.on("messageToClient", (dataMessage) => {
+      if (
+        chatBox._id === dataMessage.receiver._id ||
+        chatBox._id === dataMessage.sender._id
+      ) {
+        const arr = [...messages, dataMessage];
+        setMessages(arr);
+      } else {
+      }
+    });
+  }, [messages]);
+
+  const isTyping = () => {
+    socket.emit("typing", chatBox.socket);
+  };
+
   //---------------------------------------------
   /**
    * It sends a message to the server, which then sends it to the other user.
@@ -130,27 +117,49 @@ const Chat = ({ setIsLogedIn, data }) => {
    */
   const updateConversation = async (user) => {
     const existed = conversation.find((elem) => {
-      return elem.person._id === user.id;
+      return elem.person._id === user._id;
     });
-    if (!existed)
-      try {
-        const res = await axios.put(`http://localhost:5000/conversation`, {
-          person: user.id,
-          user_id: data.id,
-          socket_ids: [socket.id, user.socket],
-        });
 
-        if (res.data.success) {
-          const person = {
-            person: res.data.data,
-          };
+    if (existed) {
+      setChatBox(user);
+      getAllMessages(user._id);
+      return;
+    }
+    try {
+      const res = await axios.put(`http://localhost:5000/conversation`, {
+        person: user.id,
+        user_id: data.id,
+        socket_ids: [socket.id, user.socket],
+      });
 
-          setConversation([...conversation, person]);
-          setChatBox(user);
-        }
-      } catch (error) {
-        console.log(error);
+      if (res.data.success) {
+        const person = {
+          person: res.data.data,
+        };
+
+        setConversation([...conversation, person]);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //---------------------------------------------
+  /**
+   * It's an async function that makes a GET request to the server, and if the response is successful,
+   * it logs the response to the console.
+   * @param id - the id of the user that is logged in
+   */
+  const getAllMessages = async (receiver) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/message/?receiver=${receiver}&sender=${data._id}`
+      );
+      if (res) {
+        setMessages(res.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   //---------------------------------------------
   /**
@@ -161,7 +170,7 @@ const Chat = ({ setIsLogedIn, data }) => {
     try {
       const res = await axios.post(`http://localhost:5000/message/`, {
         message,
-        sender: data.id,
+        sender: data._id,
         receiver: chatBox._id,
       });
       if (res) {
@@ -171,18 +180,6 @@ const Chat = ({ setIsLogedIn, data }) => {
     }
   };
 
-  //---------------------------------------------
-  // const removeConvesetion = (id) => {
-  //   const newChatBox = chatBox.filter((ele) => {
-  //     return ele.id !== id;
-  //   });
-  //   setChatBox(newChatBox);
-  // };
-
-  //---------------------------------------------
-  /* It's calling the function `getAllConversation` when the component mounts. */
-
-  //---------------------------------------------
   return (
     <div className="container">
       <div className="onlone_box">
@@ -200,14 +197,12 @@ const Chat = ({ setIsLogedIn, data }) => {
           {online.length ? (
             online.map((ele, index) => {
               return (
-                ele.id !== data.id && (
+                ele._id !== data._id && (
                   <div
                     key={index}
                     className="users"
                     onClick={() => {
-                      if (ele.id !== data.id) {
-                        updateConversation(ele);
-                      }
+                      updateConversation(ele);
                     }}
                   >
                     <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
@@ -232,6 +227,7 @@ const Chat = ({ setIsLogedIn, data }) => {
           data={data}
           conversation={conversation}
           setConversation={setConversation}
+          getAllMessages={getAllMessages}
         />
       </div>
       <div className="chat_form_box">

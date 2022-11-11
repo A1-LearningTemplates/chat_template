@@ -32,7 +32,7 @@ const Form = ({
             <div key={index} className="sende_box">
               <span
                 className={
-                  ele.sender.id === data.id
+                  ele.sender._id === data._id
                     ? "sender_green sender"
                     : "sender_red sender"
                 }
@@ -44,7 +44,7 @@ const Form = ({
               </span>
               <p
                 className={
-                  ele.sender.id === data.id
+                  ele.sender._id === data._id
                     ? "message_green message"
                     : "message_red message"
                 }

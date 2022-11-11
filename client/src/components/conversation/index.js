@@ -5,9 +5,9 @@ const Conversation = ({
   data,
   setChatBox,
   online,
-  setMessages,
   conversation,
   setConversation,
+  getAllMessages,
 }) => {
   //---------------------------------------------
   /**
@@ -16,7 +16,7 @@ const Conversation = ({
   const getAllConversation = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/conversation/${data.id}`
+        `http://localhost:5000/conversation/${data._id}`
       );
       if (res) {
         setConversation(res.data.data.persons);
@@ -25,24 +25,7 @@ const Conversation = ({
       console.log(error);
     }
   };
-  //---------------------------------------------
-  /**
-   * It's an async function that makes a GET request to the server, and if the response is successful,
-   * it logs the response to the console.
-   * @param id - the id of the user that is logged in
-   */
-  const getAllMessages = async (receiver) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/message/?receiver=${receiver}&sender=${data.id}`
-      );
-      if (res) {
-        setMessages(res.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   useEffect(() => {
     getAllConversation();
   }, []);
