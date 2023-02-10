@@ -12,6 +12,7 @@ const conversationSchema = mongose.Schema({
         type: mongose.Schema.Types.ObjectId,
         ref: "User",
       },
+      state: { type: Boolean, default: false },
     },
   ],
 });

@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { useState } from "react";
 import Chat from "./components/chat";
-import Sw from "./components/Sw";
 import Login from "./components/loging";
 const App = () => {
   const [isLogedIn, setIsLogedIn] = useState(

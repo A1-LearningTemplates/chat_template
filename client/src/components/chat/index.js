@@ -4,10 +4,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import Form from "../form/index";
 import Conversation from "../conversation";
-// const socket2 = io("http://localhost:5000/Admin");
-// const server = io("http://localhost:5000");
 //---------------------------------------------
-
 /* A function that takes in three parameters. */
 const Chat = ({ setIsLogedIn, data }) => {
   /* A state. */
@@ -22,7 +19,6 @@ const Chat = ({ setIsLogedIn, data }) => {
       query: {
         userName: data.userName,
         _id: data._id,
-
         /**here it is possible to send client information when connecting */
       },
       autoConnect: false,
@@ -31,6 +27,7 @@ const Chat = ({ setIsLogedIn, data }) => {
   );
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
+  console.log(online);
   useEffect(() => {
     socket.connect();
     socket.on("receivedConnection", (data) => {
@@ -42,7 +39,7 @@ const Chat = ({ setIsLogedIn, data }) => {
 
     return () => {
       socket.removeAllListeners();
-      // socket.close();
+      socket.close();
     };
   }, []);
   useEffect(() => {
@@ -60,15 +57,8 @@ const Chat = ({ setIsLogedIn, data }) => {
   }, []);
 
   useEffect(() => {
-    socket.on("conv", (data) => {
-      if (data) {
-        const person = {
-          person: data.person.person,
-        };
-        setConversation([...conversation, person]);
-      }
-    });
-  }, [conversation]);
+    socket.on("conv", (data) => {});
+  }, []);
 
   useEffect(() => {
     //---------------------------------------------
@@ -76,12 +66,22 @@ const Chat = ({ setIsLogedIn, data }) => {
 
     socket.on("messageToClient", (dataMessage) => {
       if (
-        chatBox._id === dataMessage.receiver._id ||
-        chatBox._id === dataMessage.sender._id
+        chatBox._id === dataMessage.sender._id ||
+        chatBox._id === dataMessage.receiver._id
       ) {
         const arr = [...messages, dataMessage];
         setMessages(arr);
       } else {
+        const onlineUpdate = online.map((user) => {
+          console.log(user);
+          if (user._id === dataMessage.sender._id) {
+            console.log(dataMessage);
+            user.newMessage.push(dataMessage.message);
+            return user;
+          }
+          return user;
+        });
+        setOnline(onlineUpdate);
       }
     });
   }, [messages]);
@@ -116,7 +116,9 @@ const Chat = ({ setIsLogedIn, data }) => {
    * @param id - the id of the person you want to create a conversation with
    */
   const updateConversation = async (user) => {
-    const existed = conversation.find((elem) => {
+    // conversationState({ socket_id: user.socket, ...data });
+
+    const existed = conversation?.find((elem) => {
       return elem.person._id === user._id;
     });
 
@@ -127,9 +129,8 @@ const Chat = ({ setIsLogedIn, data }) => {
     }
     try {
       const res = await axios.put(`http://localhost:5000/conversation`, {
-        person: user.id,
-        user_id: data.id,
-        socket_ids: [socket.id, user.socket],
+        person: user._id,
+        user_id: data._id,
       });
 
       if (res.data.success) {
@@ -138,11 +139,18 @@ const Chat = ({ setIsLogedIn, data }) => {
         };
 
         setConversation([...conversation, person]);
+        setChatBox(user);
+        getAllMessages(user._id);
+        // conversationState({ user, data });
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const conversationState = (data) => {
+  //   socket.emit("conv_state", data);
+  // };
   //---------------------------------------------
   /**
    * It's an async function that makes a GET request to the server, and if the response is successful,
@@ -158,7 +166,7 @@ const Chat = ({ setIsLogedIn, data }) => {
         setMessages(res.data.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   //---------------------------------------------
@@ -176,7 +184,7 @@ const Chat = ({ setIsLogedIn, data }) => {
       if (res) {
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -195,20 +203,27 @@ const Chat = ({ setIsLogedIn, data }) => {
         <h2>Online Users </h2>
         <div className="users_box">
           {online.length ? (
-            online.map((ele, index) => {
+            online.map((user, index) => {
               return (
-                ele._id !== data._id && (
+                user._id !== data._id && (
                   <div
-                    key={index}
+                    key={user._id}
                     className="users"
                     onClick={() => {
-                      updateConversation(ele);
+                      updateConversation(user);
                     }}
                   >
                     <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
                     <div>
-                      <p>{ele.userName}</p>
-                      <small>online</small>
+                      <p>{user.userName}</p>
+                      <small>
+                        online
+                        {user.newMessage.length > 0 && (
+                          <span className="new_message">
+                            {user.newMessage.length}
+                          </span>
+                        )}
+                      </small>
                     </div>
                   </div>
                 )
@@ -228,6 +243,7 @@ const Chat = ({ setIsLogedIn, data }) => {
           conversation={conversation}
           setConversation={setConversation}
           getAllMessages={getAllMessages}
+          setOnline={setOnline}
         />
       </div>
       <div className="chat_form_box">

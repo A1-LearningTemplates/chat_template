@@ -13,7 +13,7 @@ const loginRouter = require("./routes/login");
 const messageRouter = require("./routes/message");
 const conversationRouter = require("./routes/conversation");
 
-mongoose.connect("mongodb://localhost:27017/Chat_app").then(
+mongoose.connect("mongodb://127.0.0.1:27017/Chat_app").then(
   () => {
     console.log("database connected");
   },

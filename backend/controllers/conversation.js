@@ -1,16 +1,15 @@
-conversationModle = require("../models/conversationSchema");
-const { chatNamespace } = require("../socket");
+conversationModel = require("../models/conversationSchema");
 
 const createConversation = async (req, res) => {
-  const { userName, id } = req.body;
-  const newConv = conversationModle({ user_id: id });
+  const { _id } = req.body;
+  const newConv = conversationModel({ user_id: _id });
   try {
     const newCreateConversation = await newConv.save();
     if (newCreateConversation) {
       return res.status(201).json({
         success: true,
         message: "user created",
-        data: { userName, id },
+        data: req.body,
       });
     }
     throw Error;
@@ -30,29 +29,26 @@ const createConversation = async (req, res) => {
     });
   }
 };
-const updateConversation = async (req, res, next) => {
-  const { person, user_id, socket_ids } = req.body;
+const updateConversation = async (req, res) => {
+  const { person, user_id } = req.body;
   try {
-    const result = await conversationModle
+    const result = await conversationModel
       .findOneAndUpdate(
-        { user_id: [user_id, person] },
-        { $addToSet: { persons: { person } } },
+        { user_id: user_id },
+        { $addToSet: { persons: { person: person } } },
         { new: true }
       )
       .select({ persons: { $elemMatch: { person: person } }, user_id });
     await result.populate("user_id", "userName");
     await result.populate("persons.person", "userName");
     if (result) {
-      chatNamespace.to(socket_ids[1]).emit("conv", {
-        person: { person: result.user_id, socket: socket_ids[0] },
-      });
       return res.status(201).json({
         success: true,
         message: "New conversation created",
         data: result.persons[0].person,
-      }); //
+      });
     }
-    throw Error;
+    throw error;
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -64,7 +60,7 @@ const updateConversation = async (req, res, next) => {
 const getConversationById = async (req, res, next) => {
   const { user_id } = req.params;
   try {
-    const data = await conversationModle
+    const data = await conversationModel
       .findOne({ user_id })
       .populate("persons.person", "userName");
 

@@ -8,6 +8,7 @@ const Conversation = ({
   conversation,
   setConversation,
   getAllMessages,
+  setOnline,
 }) => {
   //---------------------------------------------
   /**
@@ -27,7 +28,7 @@ const Conversation = ({
   };
 
   useEffect(() => {
-    getAllConversation();
+    if (data) getAllConversation();
   }, []);
   return (
     <div className="conversation_box">
@@ -40,11 +41,15 @@ const Conversation = ({
               key={index}
               onClick={() => {
                 let user = ele.person;
-                online.map((on) => {
-                  if (on.id === user._id) {
+                const newData = online.map((on) => {
+                  if (on._id === user._id) {
                     user.socket = on.socket;
+                    on.newMessage = [];
+                    return on;
                   }
+                  return on;
                 });
+                setOnline(newData);
                 setChatBox(user);
                 getAllMessages(user._id);
               }}

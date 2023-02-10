@@ -13,6 +13,7 @@ chatNamespace.on("connection", (socket) => {
     socket: socket.id,
     userName: socket.handshake.query.userName,
     _id: socket.handshake.query._id,
+    newMessage: [],
   };
   addSessionID(data);
   chatNamespace.emit("receivedConnection", sessionID);
@@ -32,9 +33,9 @@ chatNamespace.on("connection", (socket) => {
   socket.on("typing", (id) => {
     socket.to(id).emit("isTyping");
   });
-  socket.on("send_new_conversation", (data) => {
+  socket.on("conv_state", (data) => {
     console.log(data);
-    socket.to(data.socket).emit("get_new_conversation", data);
+    socket.to(data.socket_id).emit("conv", data);
   });
 });
 // io.of("/Admin").on("connection", (socket) => {
