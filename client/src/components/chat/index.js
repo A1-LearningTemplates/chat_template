@@ -4,10 +4,18 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import Form from "../form/index";
 import Conversation from "../conversation";
+import {
+  connectToSocket,
+  disconnectFromSocket,
+  isTypingReceive,
+  receiveFromSocket,
+  sendToSocket,
+} from "../../socketFunctions";
 //---------------------------------------------
 /* A function that takes in three parameters. */
 const Chat = ({ setIsLogedIn, data }) => {
   /* A state. */
+  const [test, setTest] = useState("");
   const [conversation, setConversation] = useState([]);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -15,7 +23,7 @@ const Chat = ({ setIsLogedIn, data }) => {
   const [chatBox, setChatBox] = useState("");
   const [typing, setTyping] = useState(false);
   const [socket, setsocket] = useState(
-    io("http://localhost:3001/chat", {
+    io("http://localhost:5000", {
       query: {
         userName: data.userName,
         _id: data._id,
@@ -27,44 +35,32 @@ const Chat = ({ setIsLogedIn, data }) => {
   );
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
-  console.log(online);
-  useEffect(() => {
-    socket.connect();
-    socket.on("receivedConnection", (data) => {
-      setOnline(data);
-    });
-    socket.on("receivedDisconnect", (data) => {
-      setOnline(data);
-    });
 
+  useEffect(() => {
+    connectToSocket(setOnline, socket);
     return () => {
-      socket.removeAllListeners();
-      socket.close();
+      disconnectFromSocket(socket);
     };
   }, []);
   useEffect(() => {
     let time;
-    socket.on("isTyping", () => {
-      clearTimeout(time);
-      setTyping(true);
-      time = setTimeout(() => {
-        setTyping(false);
-      }, 2000);
-    });
+    isTypingReceive(setTyping, socket, time);
     return () => {
       clearTimeout(time);
     };
   }, []);
 
   useEffect(() => {
-    socket.on("conv", (data) => {});
-  }, []);
+    sendToSocket({ event: "test", socket, data: "from test" });
+    receiveFromSocket({ event: "test", socket }, setTest);
+    console.log(test);
+  }, [test]);
 
   useEffect(() => {
     //---------------------------------------------
     /* Listening to the socket and updating the state. */
 
-    socket.on("messageToClient", (dataMessage) => {
+    const showMessage = (data) => {
       if (
         chatBox._id === dataMessage.sender._id ||
         chatBox._id === dataMessage.receiver._id
@@ -83,11 +79,12 @@ const Chat = ({ setIsLogedIn, data }) => {
         });
         setOnline(onlineUpdate);
       }
-    });
+    };
+    receiveFromSocket({ event: "messageToClient", socket }, showMessage);
   }, [messages]);
 
   const isTyping = () => {
-    socket.emit("typing", chatBox.socket);
+    sendToSocket({ event: "typing", socket, data: chatBox.socket });
   };
 
   //---------------------------------------------
@@ -96,17 +93,18 @@ const Chat = ({ setIsLogedIn, data }) => {
    * @param e - the event object
    */
   const sendMessage = (e) => {
+    e.preventDefault();
     if (message) {
-      socket.emit("message", {
+      const data = {
         message: message,
         createdAt: new Date(),
         receiver: chatBox,
         sender: data,
-      });
+      };
+      sendToSocket({ event: "message", socket, data });
       setMessage("");
       createMessage(message, chatBox.conversation);
     }
-    e.preventDefault();
   };
 
   //---------------------------------------------

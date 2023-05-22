@@ -1,4 +1,3 @@
-const { chatNamespace } = require("../socket");
 let sessionID = [];
 const addSessionID = (id) => {
   sessionID.push(id);
@@ -8,7 +7,7 @@ const removeSessionID = (id) => {
     return ele.socket !== id;
   });
 };
-chatNamespace.on("connection", (socket) => {
+const chatConnection = (socket, io) => {
   const data = {
     socket: socket.id,
     userName: socket.handshake.query.userName,
@@ -16,19 +15,19 @@ chatNamespace.on("connection", (socket) => {
     newMessage: [],
   };
   addSessionID(data);
-  chatNamespace.emit("receivedConnection", sessionID);
-  // socket.on("sendConnectedId", (data) => {
-  //   addSessionID(data);
-  // });
+
+  console.log(sessionID);
+  io.emit("receivedConnection", sessionID);
 
   socket.on("disconnect", () => {
     removeSessionID(socket.id);
-    chatNamespace.emit("receivedDisconnect", sessionID);
+    io.emit("receivedDisconnect", sessionID);
   });
   socket.on("message", (dataMessage) => {
-    chatNamespace
-      .to([dataMessage.receiver.socket, socket.id])
-      .emit("messageToClient", dataMessage);
+    io.to([dataMessage.receiver.socket, socket.id]).emit(
+      "messageToClient",
+      dataMessage
+    );
   });
   socket.on("typing", (id) => {
     socket.to(id).emit("isTyping");
@@ -37,11 +36,11 @@ chatNamespace.on("connection", (socket) => {
     console.log(data);
     socket.to(data.socket_id).emit("conv", data);
   });
-});
-// io.of("/Admin").on("connection", (socket) => {
-//   socket.join("lvl1");
-//   socket
-//     .to("lvl1")
-//     .emit("joined", { message: "I have joined the lvl1 room " + socket.id });
-//   socket.emit("welcome", { socket: socket.id, from: "Admin" });
-// });
+
+  socket.on("test", (data) => {
+    console.log("from test", data);
+    io.to([socket.id]).emit("test", data);
+  });
+};
+
+module.exports = { chatConnection };
