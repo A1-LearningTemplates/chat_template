@@ -14,6 +14,7 @@ const server = http.createServer(app);
 const loginRouter = require("./routes/login");
 const messageRouter = require("./routes/message");
 const conversationRouter = require("./routes/conversation");
+const notificationRouter = require("./routes/notification");
 
 mongoose.connect("mongodb://127.0.0.1:27017/Chat_app").then(
   () => {
@@ -27,7 +28,10 @@ mongoose.connect("mongodb://127.0.0.1:27017/Chat_app").then(
 app.use("/user", loginRouter);
 app.use("/message", messageRouter);
 app.use("/conversation", conversationRouter);
-
+app.use("/notification", notificationRouter);
+app.use("*", (req, res) => {
+  res.status(404).send("<h1>Route Not Found 404</h1>");
+});
 server.listen(PORT, () => {
   console.log(`App listening at http://localhost:${PORT}`);
 });

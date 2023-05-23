@@ -57,6 +57,40 @@ const updateConversation = async (req, res) => {
     });
   }
 };
+const updateState = async (req, res) => {
+  const { person, user_id } = req.body;
+
+  try {
+    const result = await conversationModel.update(
+      {
+        $and: [
+          { $or: [{ user_id: user_id }, { user_id: person }] },
+          {
+            persons: {
+              $elemMatch: { $or: [{ person: user_id }, { person: person }] },
+            },
+          },
+        ],
+      },
+      { $set: { "persons.$.state": true } }
+    );
+    console.log(result);
+    if (result) {
+      return res.status(201).json({
+        success: true,
+        message: "New conversation created",
+        data: result,
+      });
+    }
+    throw error;
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "server error",
+      error,
+    });
+  }
+};
 const getConversationById = async (req, res, next) => {
   const { user_id } = req.params;
   try {
@@ -84,4 +118,5 @@ module.exports = {
   createConversation,
   getConversationById,
   updateConversation,
+  updateState,
 };
