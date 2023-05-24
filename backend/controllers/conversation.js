@@ -39,6 +39,10 @@ const updateConversation = async (req, res) => {
         { new: true }
       )
       .select({ persons: { $elemMatch: { person: person } }, user_id });
+    await conversationModel.findOneAndUpdate(
+      { user_id: person },
+      { $addToSet: { persons: { person: user_id } } }
+    );
     await result.populate("user_id", "userName");
     await result.populate("persons.person", "userName");
     if (result) {

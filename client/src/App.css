@@ -11,3 +11,11 @@ body {
 .app {
   height: 90vh;
 }
+.home {
+  position: relative;
+}
+.notification {
+  position: absolute;
+  right: 0;
+  top: 0;
+}

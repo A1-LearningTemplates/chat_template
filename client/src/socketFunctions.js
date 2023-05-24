@@ -23,7 +23,8 @@ const isTypingReceive = (setState, socket, time) => {
 
 const receiveFromSocket = ({ event, socket }, setState) => {
   socket.on(event, (receivedData) => {
-    setState(receivedData);
+console.log("receivedData");
+    setState((prev) => [...prev, receivedData]);
   });
 };
 const sendToSocket = ({ event, socket, data }) => {

@@ -21,12 +21,13 @@ const Conversation = ({
       );
       if (res) {
         setConversation(res.data.data.persons);
+        console.log(res.data.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
-
+ 
   useEffect(() => {
     if (data) getAllConversation();
   }, []);
@@ -55,7 +56,7 @@ const Conversation = ({
               }}
             >
               <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
-              <span className="user_name">{ele.person.userName}</span>
+              <span className="user_name">{ele.person?.userName}</span>
             </div>
           );
         })}

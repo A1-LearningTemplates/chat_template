@@ -11,17 +11,19 @@ import {
   receiveFromSocket,
   sendToSocket,
 } from "../../socketFunctions";
+import Online from "../online";
 //---------------------------------------------
 /* A function that takes in three parameters. */
-const Chat = ({ setIsLogedIn, data }) => {
+const Chat = ({ setIsLogedIn, data, setNotification, notification }) => {
   /* A state. */
   const [test, setTest] = useState("");
-  const [conversation, setConversation] = useState([]);
+  const [conversation, setConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [online, setOnline] = useState([]);
   const [chatBox, setChatBox] = useState("");
   const [typing, setTyping] = useState(false);
+  const [notificationRequest, setNotificationRequest] = useState(null);
   const [socket, setsocket] = useState(
     io("http://localhost:5000", {
       query: {
@@ -35,58 +37,68 @@ const Chat = ({ setIsLogedIn, data }) => {
   );
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
+  const getRequestedNotificationById = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/notification/sended?user_id=${data._id}`
+      );
+      if (res.data.success) {
+        setNotificationRequest(res.data.notification);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
+    getRequestedNotificationById();
     connectToSocket(setOnline, socket);
     return () => {
       disconnectFromSocket(socket);
     };
   }, []);
+
   useEffect(() => {
     let time;
     isTypingReceive(setTyping, socket, time);
+
     return () => {
       clearTimeout(time);
     };
-  }, []);
+  }, [typing]);
 
-  useEffect(() => {
-    sendToSocket({ event: "test", socket, data: "from test" });
-    receiveFromSocket({ event: "test", socket }, setTest);
-    console.log(test);
-  }, [test]);
-
+  const showMessage = (data) => {
+    if (chatBox._id === data.sender._id || chatBox._id === data.receiver._id) {
+      const arr = [...messages, data];
+      setMessages(arr);
+    } else {
+      const onlineUpdate = online.map((user) => {
+        console.log(user);
+        if (user._id === data.sender._id) {
+          user.newMessage.push(data.message);
+          return user;
+        }
+        return user;
+      });
+      setOnline(onlineUpdate);
+    }
+  };
   useEffect(() => {
     //---------------------------------------------
     /* Listening to the socket and updating the state. */
-
-    const showMessage = (data) => {
-      if (
-        chatBox._id === dataMessage.sender._id ||
-        chatBox._id === dataMessage.receiver._id
-      ) {
-        const arr = [...messages, dataMessage];
-        setMessages(arr);
-      } else {
-        const onlineUpdate = online.map((user) => {
-          console.log(user);
-          if (user._id === dataMessage.sender._id) {
-            console.log(dataMessage);
-            user.newMessage.push(dataMessage.message);
-            return user;
-          }
-          return user;
-        });
-        setOnline(onlineUpdate);
-      }
-    };
     receiveFromSocket({ event: "messageToClient", socket }, showMessage);
   }, [messages]);
-
+  useEffect(() => {
+    //---------------------------------------------
+    /* Listening to the socket and updating the state. */
+    receiveFromSocket({ event: "notification", socket }, setNotification);
+  }, [notification]);
+  const sendNotification = (newNotification) => {
+    sendToSocket({ event: "notification", socket, data: newNotification });
+  };
   const isTyping = () => {
     sendToSocket({ event: "typing", socket, data: chatBox.socket });
   };
-
   //---------------------------------------------
   /**
    * It sends a message to the server, which then sends it to the other user.
@@ -95,13 +107,13 @@ const Chat = ({ setIsLogedIn, data }) => {
   const sendMessage = (e) => {
     e.preventDefault();
     if (message) {
-      const data = {
+      const newData = {
         message: message,
         createdAt: new Date(),
         receiver: chatBox,
         sender: data,
       };
-      sendToSocket({ event: "message", socket, data });
+      sendToSocket({ event: "message", socket, data: newData });
       setMessage("");
       createMessage(message, chatBox.conversation);
     }
@@ -115,7 +127,6 @@ const Chat = ({ setIsLogedIn, data }) => {
    */
   const updateConversation = async (user) => {
     // conversationState({ socket_id: user.socket, ...data });
-
     const existed = conversation?.find((elem) => {
       return elem.person._id === user._id;
     });
@@ -130,12 +141,13 @@ const Chat = ({ setIsLogedIn, data }) => {
         person: user._id,
         user_id: data._id,
       });
+      console.log(res);
 
       if (res.data.success) {
         const person = {
           person: res.data.data,
         };
-
+        console.log(person);
         setConversation([...conversation, person]);
         setChatBox(user);
         getAllMessages(user._id);
@@ -204,26 +216,13 @@ const Chat = ({ setIsLogedIn, data }) => {
             online.map((user, index) => {
               return (
                 user._id !== data._id && (
-                  <div
-                    key={user._id}
-                    className="users"
-                    onClick={() => {
-                      updateConversation(user);
-                    }}
-                  >
-                    <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />
-                    <div>
-                      <p>{user.userName}</p>
-                      <small>
-                        online
-                        {user.newMessage.length > 0 && (
-                          <span className="new_message">
-                            {user.newMessage.length}
-                          </span>
-                        )}
-                      </small>
-                    </div>
-                  </div>
+                  <Online
+                  key={user._id }
+                    notificationRequest={notificationRequest}
+                    user={user}
+                    data={data}
+                    sendNotification={sendNotification}
+                  />
                 )
               );
             })

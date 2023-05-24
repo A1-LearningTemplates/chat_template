@@ -20,7 +20,6 @@ const createNotification = async (req, res) => {
       return res.status(201).json({
         success: true,
         message: "new Notification created",
-        data: req.body,
       });
     }
     throw Error("something went wrong");

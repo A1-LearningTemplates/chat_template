@@ -1,0 +1,38 @@
+.notification_btn {
+  padding: 0.5rem;
+  background: rgb(154, 154, 154);
+  background: linear-gradient(
+    342deg,
+    rgba(21, 45, 97, 0.283) 0%,
+    rgba(44, 72, 144, 0.216) 35%,
+    rgba(50, 115, 244, 0.513) 100%
+  );
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #000000;
+  cursor: pointer;
+}
+.notification_box {
+  padding: 10px;
+}
+.notification_user {
+  padding: 10px;
+  opacity: 0;
+  transform: translateY(-1000px);
+  background-color: rgb(254, 254, 254);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  transition: transform 0.3s;
+}
+.notification_container:hover .notification_user {
+  opacity: 1;
+  transform: translateY(0);
+}
+.show {
+  opacity: 1;
+  transform: translateY(0);
+}

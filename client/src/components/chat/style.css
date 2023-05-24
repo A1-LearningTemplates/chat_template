@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  grid-template-columns: 120px 150px 80%;
+  grid-template-columns: 120px 150px auto;
   grid-template-rows: 100vh;
   background: rgb(25, 64, 147);
   background: linear-gradient(
@@ -38,6 +38,7 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
+  position: relative;
 }
 .users p {
   color: rgb(72, 73, 72);
@@ -51,8 +52,19 @@
   color: rgb(25, 217, 25);
   letter-spacing: 2px;
 }
-.chat_form_box {
-  /* width: 100vw; */
+.user_requested {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1010109e;
+  text-align: center;
+  padding-top: 16%;
+  padding-left: 2rem;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.7rem;
 }
 img {
   width: 30px;
