@@ -1,16 +1,20 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
 
 const Online = ({ user, data, sendNotification, notificationRequest }) => {
   const createNotification = async () => {
+    console.log(user, data);
     try {
       const res = await axios.post(`http://localhost:5000/notification/`, {
         sender: data._id,
         receiver: user._id,
       });
       if (res.data.success) {
-        console.log(res.data);
-        sendNotification(user);
+        console.log(res.data.newNotification);
+        const newNotification = {
+          ...res.data.newNotification,
+          sender: user,
+        };
+        sendNotification(newNotification);
       }
     } catch (error) {
       console.log(error);
@@ -22,8 +26,7 @@ const Online = ({ user, data, sendNotification, notificationRequest }) => {
       key={user._id}
       className="users"
       onClick={() => {
-        // createNotification(user);
-        sendNotification(user);
+        createNotification(user);
       }}
     >
       <img src="https://previews.123rf.com/images/metelsky/metelsky1809/metelsky180900233/109815470-man-avatar-profile-male-face-icon-vector-illustration-.jpg" />

@@ -20,6 +20,7 @@ const createNotification = async (req, res) => {
       return res.status(201).json({
         success: true,
         message: "new Notification created",
+        newNotification,
       });
     }
     throw Error("something went wrong");
@@ -78,8 +79,29 @@ const getRequestedNotificationById = async (req, res) => {
     });
   }
 };
+const deleteNotification = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await notificationModel.findByIdAndDelete(id);
+    if (req.currentResponse) {
+      return res.status(200).json(req.currentResponse);
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: " the notification deleted successfully",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "server error",
+      error,
+    });
+  }
+};
 module.exports = {
   createNotification,
   getNotificationById,
   getRequestedNotificationById,
+  deleteNotification,
 };

@@ -29,30 +29,31 @@ const createConversation = async (req, res) => {
     });
   }
 };
-const updateConversation = async (req, res) => {
+const updateConversation = async (req, res, next) => {
   const { person, user_id } = req.body;
+  console.log(req.body);
   try {
-    const result = await conversationModel
-      .findOneAndUpdate(
-        { user_id: user_id },
-        { $addToSet: { persons: { person: person } } },
-        { new: true }
-      )
-      .select({ persons: { $elemMatch: { person: person } }, user_id });
-    await conversationModel.findOneAndUpdate(
+    const result = await conversationModel.findOneAndUpdate(
+      { user_id: user_id },
+      { $addToSet: { persons: { person: person } } }
+    );
+    //   .select({ persons: { $elemMatch: { person: person } }, user_id });
+    // await result.populate("user_id", "userName");
+    // await result.populate("persons.person", "userName");
+    const result2 = await conversationModel.findOneAndUpdate(
       { user_id: person },
       { $addToSet: { persons: { person: user_id } } }
     );
-    await result.populate("user_id", "userName");
-    await result.populate("persons.person", "userName");
+    console.log(result,result2);
     if (result) {
-      return res.status(201).json({
+      req.currentResponse = {
         success: true,
         message: "New conversation created",
-        data: result.persons[0].person,
-      });
+      };
+      next();
+      return;
     }
-    throw error;
+    throw Error("New conversation created");
   } catch (error) {
     res.status(500).json({
       success: false,

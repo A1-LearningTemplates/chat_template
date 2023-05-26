@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./style.css";
 import axios from "axios";
-import { io } from "socket.io-client";
 import Form from "../form/index";
 import Conversation from "../conversation";
 import {
@@ -14,9 +13,14 @@ import {
 import Online from "../online";
 //---------------------------------------------
 /* A function that takes in three parameters. */
-const Chat = ({ setIsLogedIn, data, setNotification, notification }) => {
+const Chat = ({
+  setIsLogedIn,
+  data,
+  setNotification,
+  notification,
+  socket,
+}) => {
   /* A state. */
-  const [test, setTest] = useState("");
   const [conversation, setConversation] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -24,17 +28,7 @@ const Chat = ({ setIsLogedIn, data, setNotification, notification }) => {
   const [chatBox, setChatBox] = useState("");
   const [typing, setTyping] = useState(false);
   const [notificationRequest, setNotificationRequest] = useState(null);
-  const [socket, setsocket] = useState(
-    io("http://localhost:5000", {
-      query: {
-        userName: data.userName,
-        _id: data._id,
-        /**here it is possible to send client information when connecting */
-      },
-      autoConnect: false,
-      // reconnection: false,
-    })
-  );
+
   //---------------------------------------------
   /* Connecting to the socket and sending the data to the server. */
   const getRequestedNotificationById = async () => {
@@ -51,8 +45,8 @@ const Chat = ({ setIsLogedIn, data, setNotification, notification }) => {
   };
 
   useEffect(() => {
-    getRequestedNotificationById();
     connectToSocket(setOnline, socket);
+    getRequestedNotificationById();
     return () => {
       disconnectFromSocket(socket);
     };
@@ -118,49 +112,17 @@ const Chat = ({ setIsLogedIn, data, setNotification, notification }) => {
       createMessage(message, chatBox.conversation);
     }
   };
-
-  //---------------------------------------------
-  /**
-   * It takes in an id, and then it makes a post request to the server, sending the id of the current
-   * user and the id of the user that the current user wants to message
-   * @param id - the id of the person you want to create a conversation with
-   */
-  const updateConversation = async (user) => {
-    // conversationState({ socket_id: user.socket, ...data });
-    const existed = conversation?.find((elem) => {
-      return elem.person._id === user._id;
-    });
-
-    if (existed) {
-      setChatBox(user);
-      getAllMessages(user._id);
-      return;
-    }
-    try {
-      const res = await axios.put(`http://localhost:5000/conversation`, {
-        person: user._id,
-        user_id: data._id,
-      });
-      console.log(res);
-
-      if (res.data.success) {
-        const person = {
-          person: res.data.data,
-        };
-        console.log(person);
-        setConversation([...conversation, person]);
-        setChatBox(user);
-        getAllMessages(user._id);
-        // conversationState({ user, data });
-      }
-    } catch (error) {
-      console.log(error);
+  const updateConversation = (users) => {
+    if (users.user1._id == data._id) {
+      setConversation([...conversation, users.user1]);
+    } else {
+      setConversation([...conversation, users.user2]);
     }
   };
+  useEffect(() => {
+    receiveFromSocket({ event: "conversation", socket }, updateConversation);
+  }, [conversation]);
 
-  // const conversationState = (data) => {
-  //   socket.emit("conv_state", data);
-  // };
   //---------------------------------------------
   /**
    * It's an async function that makes a GET request to the server, and if the response is successful,
@@ -215,9 +177,10 @@ const Chat = ({ setIsLogedIn, data, setNotification, notification }) => {
           {online.length ? (
             online.map((user, index) => {
               return (
+                data &&
                 user._id !== data._id && (
                   <Online
-                  key={user._id }
+                    key={user._id}
                     notificationRequest={notificationRequest}
                     user={user}
                     data={data}

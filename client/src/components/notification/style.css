@@ -27,7 +27,9 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
   transition: transform 0.3s;
+  position: relative;
 }
+
 .notification_container:hover .notification_user {
   opacity: 1;
   transform: translateY(0);
@@ -35,4 +37,29 @@
 .show {
   opacity: 1;
   transform: translateY(0);
+}
+
+.notification_user:hover .icon_slider {
+  display: block;
+}
+.icon_slider {
+  display: none;
+  transition: all 1s;
+  position: absolute;
+  width: 0;
+  height: 100%;
+  left: 0;
+  padding-top: 8%;
+  text-align: end;
+  background-color: rgba(7, 236, 160, 0.411);
+  animation: show_icon 0.5s ease-in forwards;
+  z-index: 10;
+}
+.icon_slider img {
+  width: 28%;
+}
+@keyframes show_icon {
+  100% {
+    width: 100%;
+  }
 }

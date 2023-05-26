@@ -23,7 +23,6 @@ const chatConnection = (socket, io) => {
     io.emit("receivedDisconnect", sessionID);
   });
   socket.on("message", (dataMessage) => {
-    console.log(dataMessage);
     io.to([dataMessage.receiver.socket, socket.id]).emit(
       "messageToClient",
       dataMessage
@@ -33,13 +32,17 @@ const chatConnection = (socket, io) => {
     socket.to(id).emit("isTyping");
   });
   //edit
-  socket.on("conv_state", (data) => {
-    socket.to(data.socket_id).emit("conv", data);
+  socket.on("conversation", (data) => {
+    const id = sessionID.find((ele) => {
+      return ele._id === data.user1._id;
+    });
+    console.log("ASDASD",id,data);
+    io.to([socket.id, id.socket]).emit("conversation", data);
   });
 
   socket.on("notification", (data) => {
     console.log(data);
-    socket.to(data.socket).emit("notification", data);
+    socket.to(data.sender.socket).emit("notification", data);
   });
 };
 

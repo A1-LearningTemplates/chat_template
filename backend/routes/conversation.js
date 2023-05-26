@@ -6,9 +6,8 @@ const {
   updateConversation,
   updateState,
 } = require("../controllers/conversation");
-
+const { deleteNotification } = require("../controllers/notification");
 conversationRouter.get("/:user_id", getConversationById);
-conversationRouter.put("/", updateConversation);
-conversationRouter.put("/state", updateState);
+conversationRouter.put("/:id", updateConversation, deleteNotification);
 
 module.exports = conversationRouter;
